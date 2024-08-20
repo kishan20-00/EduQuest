@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser({ token: response.data.token });
       console.log(response.data);
-      history('/signup');
+      history('/');
     } catch (error) {
       console.error('Error logging in:', error);
       // Handle specific error messages if needed
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', response.data.token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser({ token: response.data.token });
-      history('/dashboard');
+      history('/');
     } catch (error) {
       console.error('Error signing up:', error);
       // Handle specific error messages if needed
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
-    history('/signin');
+    history('/');
   };
 
   return (
