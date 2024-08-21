@@ -10,14 +10,13 @@ app.use(express.json());
 app.use(cors());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_CONNECT_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
-  console.log('MongoDB connected');
-}).catch(err => {
-  console.log('MongoDB connection error:', err);
-});
+mongoose.connect(process.env.MONGO_CONNECT_URL)
+  .then(() => {
+    console.log('MongoDB connected');
+  })
+  .catch(err => {
+    console.log('MongoDB connection error:', err);
+  });
 
 // Routes
 const authRoutes = require('./routes/auth');
