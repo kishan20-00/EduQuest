@@ -1,0 +1,11 @@
+=IFS(
+    AND(B2>70, C2>70, D2>70), "Advanced",
+AND(B2>=40, B2<=70, C2>=40, C2<=70, D2>=40, D2<=70), "Intermediate",
+AND(OR(B2<40, C2<40, D2<40)), "Beginner",
+    TRUE, "Beginner"
+)
+
+
+-----------------------------------------
+
+=IF(B2=MIN(B2,C2,D2), "Text for B2", IF(C2=MIN(B2,C2,D2), "Text for C2", "Text for D2"))
