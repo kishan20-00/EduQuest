@@ -35,7 +35,14 @@ router.post('/signup', async (req, res) => {
       expiresIn: 3600,
     }, (err, token) => {
       if (err) throw err;
-      res.json({msg: 'User created successfully', token });
+      res.json({
+        msg: 'User created successfully',
+        token,
+        user: {
+          name: user.name,
+          email: user.email,
+        }
+      });
     });
   } catch (err) {
     console.error(err.message);
@@ -67,7 +74,56 @@ router.post('/login', async (req, res) => {
       expiresIn: 3600,
     }, (err, token) => {
       if (err) throw err;
-      res.json({ msg: "Logged In Successfully !!", token });
+      res.json({
+        msg: "Logged In Successfully !!",
+        token,
+        user: {
+          name: user.name,
+          email: user.email,
+          age: user.age,
+          contactNumber: user.contactNumber,
+          profilePhoto: user.profilePhoto,
+          profession: user.profession,
+          interestedSubject: user.interestedSubject,
+        }
+      });
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Update User Details
+router.put('/update', async (req, res) => {
+  const { id, age, contactNumber, profilePhoto, profession, interestedSubject } = req.body;
+  
+  try {
+    let user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    // Update the user's details
+    user.age = age || user.age;
+    user.contactNumber = contactNumber || user.contactNumber;
+    user.profilePhoto = profilePhoto || user.profilePhoto;
+    user.profession = profession || user.profession;
+    user.interestedSubject = interestedSubject || user.interestedSubject;
+
+    await user.save();
+
+    res.json({
+      msg: 'User details updated successfully',
+      user: {
+        name: user.name,
+        email: user.email,
+        age: user.age,
+        contactNumber: user.contactNumber,
+        profilePhoto: user.profilePhoto,
+        profession: user.profession,
+        interestedSubject: user.interestedSubject,
+      }
     });
   } catch (err) {
     console.error(err.message);

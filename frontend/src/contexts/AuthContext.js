@@ -11,9 +11,10 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    const userInfo = localStorage.getItem('user');
+    if (token && userInfo) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      setUser({ token });
+      setUser(JSON.parse(userInfo));
     }
     setLoading(false);
   }, []);
@@ -22,9 +23,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/login', userData);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      setUser({ token: response.data.token });
-      console.log(response.data);
+      setUser(response.data.user);
       history('/');
     } catch (error) {
       console.error('Error logging in:', error);
@@ -36,8 +37,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.post('http://localhost:5000/api/auth/signup', userData);
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-      setUser({ token: response.data.token });
+      setUser(response.data.user);
       history('/');
     } catch (error) {
       console.error('Error signing up:', error);
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     delete axios.defaults.headers.common['Authorization'];
     setUser(null);
     history('/');
