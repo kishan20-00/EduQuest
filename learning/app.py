@@ -29,11 +29,16 @@ def preprocess_input(input_data):
                 # Handle unseen labels by replacing them with a default value or -1
                 encoded_input.append(-1)
         else:
-            encoded_input.append(value)
+            # Convert last three variables to numbers
+            try:
+                numeric_value = float(value)
+                encoded_input.append(numeric_value)
+            except ValueError:
+                print(f"Invalid numeric input '{value}' for feature '{col}'")
+                encoded_input.append(0)  # Handle invalid numeric input by defaulting to 0 or any desired fallback
+
     print("Encoded input:", encoded_input)
     return np.array(encoded_input).reshape(1, -1)
-
-
 
 # Define a route for prediction
 @app.route('/predict', methods=['POST'])

@@ -12,9 +12,9 @@ input_data = {
     'Curriculum structure': 'Exam',
     'Available content': 'Lectures',
     'External factors': 'Time Constraints',
-    'Time spent on different types of content': 10,
-    'Completion rates': 7,
-    'Quiz scores': 80
+    'Time spent on different types of content': '10',
+    'Completion rates': '7',
+    'Quiz scores': '80'
 }
 
 # Send a POST request with JSON data to the Flask app

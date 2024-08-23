@@ -8,6 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import HomePage from './components/HomePage';
 import NavBar from './components/Navbar';
 import ProfilePage from './components/Profile';
+import Video from './components/Video';
 
 function App() {
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/video" element={<Video />} />
       </Routes>
       </ThemeProvider>
     </AuthProvider>

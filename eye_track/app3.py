@@ -4,8 +4,10 @@ from PIL import Image
 import numpy as np
 import io
 import base64
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Load the pre-trained Keras model
 best_model = load_model('detection.h5')  # Replace 'detection.h5' with the path to your .h5 file
@@ -35,8 +37,11 @@ def predict_image(image_data):
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    image_data = request.json['image_data'].split(',')[1]  # Extract base64 image data
-    image_data = base64.b64decode(image_data)  # Decode the base64 string
+    # Check for multipart/form-data
+    if 'image_data' not in request.files:
+        return jsonify({'error': 'No image_data part in the request'}), 400
+
+    image_data = request.files['image_data'].read()  # Read the image data
     prediction = predict_image(image_data)
     return jsonify({'prediction': float(prediction)})
 

@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 import joblib
 import pandas as pd
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Load the pre-trained models and preprocessing objects
 model_complexity = joblib.load('model_complexity.pkl')
@@ -26,6 +28,7 @@ def predict():
     # Standardize numerical features
     numerical_cols = ['Course Score', 'Learning Score', 'Quiz Score']
     input_data[numerical_cols] = scaler.transform(input_data[numerical_cols])
+    print(input_data)
 
     # Predict the Complexity
     complexity_prediction = model_complexity.predict(input_data)
@@ -35,9 +38,11 @@ def predict():
 
     # Create the response dictionary
     response = {
-        'Predicted Complexity': complexity_prediction[0],
-        'Predicted Learning Content': content_prediction[0]
+        'Predicted_Complexity': complexity_prediction[0],
+        'Predicted_Learning_Content': content_prediction[0]
     }
+
+    print(response)
 
     return jsonify(response)
 

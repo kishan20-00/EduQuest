@@ -1,0 +1,37 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .video-container {
+    border: 20px solid #ccc;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .buttons-container {
+    display: flex;
+    gap: 10px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  p {
+    margin-top: 20px;
+  }
+  

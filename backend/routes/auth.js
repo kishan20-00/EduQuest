@@ -38,10 +38,7 @@ router.post('/signup', async (req, res) => {
       res.json({
         msg: 'User created successfully',
         token,
-        user: {
-          name: user.name,
-          email: user.email,
-        }
+        user,
       });
     });
   } catch (err) {
@@ -77,15 +74,7 @@ router.post('/login', async (req, res) => {
       res.json({
         msg: "Logged In Successfully !!",
         token,
-        user: {
-          name: user.name,
-          email: user.email,
-          age: user.age,
-          contactNumber: user.contactNumber,
-          profilePhoto: user.profilePhoto,
-          profession: user.profession,
-          interestedSubject: user.interestedSubject,
-        }
+        user,
       });
     });
   } catch (err) {
