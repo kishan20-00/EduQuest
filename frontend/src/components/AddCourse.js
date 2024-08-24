@@ -21,7 +21,7 @@ const AddCoursePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:7000/api/content/add', courseContent);
+      const response = await axios.post('https://edu-quest-hfoq.vercel.app/api/content/add', courseContent);
       console.log('Course content added successfully:', response.data);
       alert('Course content added successfully!');
       setCourseContent({

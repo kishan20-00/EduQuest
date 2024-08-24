@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:7000/api/auth/login', userData);
+      const response = await axios.post('https://edu-quest-hfoq.vercel.app/api/auth/login', userData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   
   const signup = async (userData) => {
     try {
-      const response = await axios.post('http://localhost:7000/api/auth/signup', userData);
+      const response = await axios.post('https://edu-quest-hfoq.vercel.app/api/auth/signup', userData);
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;

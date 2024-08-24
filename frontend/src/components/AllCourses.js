@@ -38,7 +38,7 @@ const ViewCoursesPage = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await axios.get('http://localhost:7000/api/content');
+      const response = await axios.get('https://edu-quest-hfoq.vercel.app/api/content');
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);

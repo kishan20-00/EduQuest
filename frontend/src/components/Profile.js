@@ -63,7 +63,7 @@ const ProfilePage = () => {
 // Function to update user details
 const updateUserDetails = async (userDetails) => {
   try {
-    const response = await axios.put(`http://localhost:7000/api/auth/update/${userDetails._id}`, userDetails);
+    const response = await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, userDetails);
     console.log('User details updated successfully:', response.data);
     return response.data;
   } catch (error) {
