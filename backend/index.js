@@ -18,6 +18,11 @@ mongoose.connect(process.env.MONGO_CONNECT_URL)
     console.log('MongoDB connection error:', err);
   });
 
+// Root Route - Add this if you want to respond to '/'
+app.get('/', (req, res) => {
+  res.send('Welcome to the API');
+});
+
 // Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
