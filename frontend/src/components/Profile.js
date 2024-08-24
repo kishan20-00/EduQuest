@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid, Card, CardContent, Avatar, TextField, Button } from '@mui/material';
-import { PhotoCamera } from '@mui/icons-material';
 import axios from 'axios';
 
 const ProfilePage = () => {
@@ -61,26 +60,33 @@ const ProfilePage = () => {
     }
   }, []);
 
-  const handleChange = (e) => {
-    setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
-  };
+// Function to update user details
+const updateUserDetails = async (userDetails) => {
+  try {
+    const response = await axios.put(`http://localhost:7000/api/auth/update/${userDetails._id}`, userDetails);
+    console.log('User details updated successfully:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user details:', error.response?.data || error.message);
+    throw error;
+  }
+};
 
-  const handlePhotoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUserDetails({ ...userDetails, profilePhoto: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleUpdate = () => {
-    // Update user data in localStorage
+// Handle form submission
+const handleUpdate = async () => {
+  try {
+    await updateUserDetails(userDetails);
+    alert('User details updated successfully!');
     localStorage.setItem('user', JSON.stringify(userDetails));
     setIsEditing(false);
-  };
+  } catch (error) {
+    alert('Failed to update user details.');
+  }
+};
+
+  const handleChange = (e) => {
+    setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
+  }; 
 
   // Handle input change for prediction form
   const handlePredictionChange = (e) => {
@@ -383,19 +389,14 @@ const ProfilePage = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    startIcon={<PhotoCamera />}
-                  >
-                    Upload Profile Photo
-                    <input
-                      type="file"
-                      hidden
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                    />
-                  </Button>
+                <TextField
+              fullWidth
+              label="Profile Photo URL"
+              name="profilePhoto"
+              value={userDetails.profilePhoto}
+              onChange={handleChange}
+              margin="normal"
+            />
                 </Grid>
                 <Grid item xs={12}>
                   <Button variant="contained" onClick={handleUpdate}>

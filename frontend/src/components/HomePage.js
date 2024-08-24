@@ -1,42 +1,84 @@
-import React from 'react';
-import { Box, Typography, Container, Grid, Card, CardContent, CardMedia, CardActionArea } from '@mui/material';
-// import backgroundImage from '../images/your-background-image.jpg';
-
-const courses = [
-  {
-    id: 1,
-    title: 'Cyber Security',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing.',
-    image: 'https://www.technologysolutions.net/wp-content/uploads/2023/09/pros-and-cons-scaled-2560x1280.jpeg'
-  },
-  {
-    id: 2,
-    title: 'Software Engineering',
-    description: 'Quisque nisl eros, pulvinar facilisis justo mollis.',
-    image: 'https://www.herzing.edu/sites/default/files/styles/fp_960_480/public/2020-09/how-to-become-software-engineer.jpg.webp?itok=uuamJN8l'
-  },
-  {
-    id: 3,
-    title: 'Database Management',
-    description: 'Auctor consequat urna. Morbi a bibendum metus.',
-    image: 'https://www.exasol.com/app/uploads/2023/12/thumbnail-what-is-a-relational-database.webp'
-  },
-  {
-    id: 4,
-    title: 'Machine Learning',
-    description: 'Vestibulum ante ipsum primis in faucibus orci luctus.',
-    image: 'https://bitrock.it/wp-content/uploads/2023/12/Blog-Post_Visuals-1.png'
-  }
-];
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Box,
+  Container,
+  Typography,
+  Grid,
+  TextField,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Card,
+  CardContent,
+  CardMedia,
+} from '@mui/material';
+import StarRating from './StarRating';  // Import the custom StarRating component
 
 const HomePage = () => {
+  const [courses, setCourses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [complexityFilters, setComplexityFilters] = useState({
+    beginner: false,
+    intermediate: false,
+    advanced: false
+  });
+  const [learningMaterialFilters, setLearningMaterialFilters] = useState({
+    video: false,
+    audio: false,
+    pdf: false,
+    text: false,
+    assignment: false,
+    quiz: false
+  });
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const response = await axios.get('http://localhost:7000/api/content');
+      setCourses(response.data);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+    }
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleComplexityFilterChange = (e) => {
+    const { name, checked } = e.target;
+    setComplexityFilters({ ...complexityFilters, [name]: checked });
+  };
+
+  const handleLearningMaterialFilterChange = (e) => {
+    const { name, checked } = e.target;
+    setLearningMaterialFilters({ ...learningMaterialFilters, [name]: checked });
+  };
+
+  const filteredCourses = courses
+    .filter((course) => {
+      const matchesSearchTerm = course.contentName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesComplexityFilter = Object.keys(complexityFilters).some(
+        (key) => complexityFilters[key] && course.complexity === key
+      ) || Object.values(complexityFilters).every(value => !value);
+      const matchesLearningMaterialFilter = Object.keys(learningMaterialFilters).some(
+        (key) => learningMaterialFilters[key] && course.learningMaterial === key
+      ) || Object.values(learningMaterialFilters).every(value => !value);
+
+      return matchesSearchTerm && matchesComplexityFilter && matchesLearningMaterialFilter;
+    });
+
+  const handleCardClick = (url) => {
+    window.open(url, '_blank');
+  };
+
   return (
     <Box
       sx={{
-        // backgroundImage: `url(${backgroundImage})`,
-        // backgroundRepeat: 'no-repeat',
-        // backgroundSize: 'cover',
-        // backgroundAttachment: 'fixed',
         minHeight: '100vh',
         paddingTop: 8,
         paddingBottom: 4,
@@ -49,26 +91,87 @@ const HomePage = () => {
         <Typography variant="h5" component="h2" gutterBottom>
           Explore our courses in different areas of Information Technology
         </Typography>
+        
+        <Box sx={{ mb: 4 }}>
+          <TextField
+            label="Search by Content Name"
+            variant="outlined"
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearch}
+            sx={{ mb: 2 }}
+          />
+          <Typography variant="h6">Filter by Complexity</Typography>
+          <FormGroup row>
+            {Object.keys(complexityFilters).map((key) => (
+              <FormControlLabel
+                key={key}
+                control={
+                  <Checkbox
+                    name={key}
+                    checked={complexityFilters[key]}
+                    onChange={handleComplexityFilterChange}
+                  />
+                }
+                label={key.charAt(0).toUpperCase() + key.slice(1)}
+              />
+            ))}
+          </FormGroup>
+          <Typography variant="h6" sx={{ mt: 4 }}>Filter by Learning Material</Typography>
+          <FormGroup row>
+            {Object.keys(learningMaterialFilters).map((key) => (
+              <FormControlLabel
+                key={key}
+                control={
+                  <Checkbox
+                    name={key}
+                    checked={learningMaterialFilters[key]}
+                    onChange={handleLearningMaterialFilterChange}
+                  />
+                }
+                label={key.charAt(0).toUpperCase() + key.slice(1)}
+              />
+            ))}
+          </FormGroup>
+        </Box>
+        
         <Grid container spacing={4}>
-          {courses.map((course) => (
-            <Grid item key={course.id} xs={12} sm={6} md={4}>
-              <Card>
-                <CardActionArea>
+          {filteredCourses.map((course) => (
+            <Grid item key={course._id} xs={12} sm={6} md={4}>
+              <Card 
+                onClick={() => handleCardClick(course.source)} 
+                sx={{ 
+                  cursor: 'pointer',
+                  height: '350px', // Fixed height for the card
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                {course.image && (
                   <CardMedia
                     component="img"
                     height="140"
                     image={course.image}
-                    alt={course.title}
+                    alt={course.contentName}
                   />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {course.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {course.description}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
+                )}
+                <CardContent sx={{ flex: 1, overflow: 'hidden' }}>
+                  <Typography variant="h6" noWrap>
+                    {course.contentName}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mt: 2, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: 3 }}>
+                    {course.description}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Learning Material: {course.learningMaterial}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Complexity: {course.complexity}
+                  </Typography>
+                  <Box sx={{ mt: 1 }}>
+                    <StarRating rating={parseFloat(course.reviews) || 0} />
+                  </Box>
+                </CardContent>
               </Card>
             </Grid>
           ))}

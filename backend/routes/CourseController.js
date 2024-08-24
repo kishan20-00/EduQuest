@@ -3,7 +3,7 @@ const Course = require('../models/CourseContent');
 const router = express.Router();
 
 // Create a new course content
-router.post('/', async (req, res) => {
+router.post('/add', async (req, res) => {
   try {
     const course = new Course(req.body);
     await course.save();
@@ -35,7 +35,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update course content by ID
-router.put('/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   try {
     const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!course) return res.status(404).json({ message: 'Course not found' });
@@ -46,7 +46,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete course content by ID
-router.delete('/:id', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
   try {
     const course = await Course.findByIdAndDelete(req.params.id);
     if (!course) return res.status(404).json({ message: 'Course not found' });

@@ -34,7 +34,7 @@ const NavBar = ({ darkMode, setDarkMode }) => {
           <Typography variant="body1" component={RouterLink} to="/about" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
             About
           </Typography>
-          <Typography variant="body1" component={RouterLink} to="/courses" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
+          <Typography variant="body1" component={RouterLink} to="/course" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
             Courses
           </Typography>
           <Typography variant="body1" component={RouterLink} to="/contact" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>

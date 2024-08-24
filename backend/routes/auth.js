@@ -31,9 +31,7 @@ router.post('/signup', async (req, res) => {
       },
     };
 
-    jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: 3600,
-    }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
       res.json({
         msg: 'User created successfully',
@@ -67,9 +65,7 @@ router.post('/login', async (req, res) => {
       },
     };
 
-    jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: 3600,
-    }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
       res.json({
         msg: "Logged In Successfully !!",
@@ -83,25 +79,50 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Update User Details
-router.put('/update', async (req, res) => {
-  const { id, age, contactNumber, profilePhoto, profession, interestedSubject } = req.body;
-  
+// Get User Details by ID
+router.get('/user/:id', async (req, res) => {
   try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Update User Details by ID
+router.put('/update/:id', async (req, res) => {
+  const { id } = req.params; // Get the user ID from the URL parameters
+  const { name, age, contactNumber, profilePhoto, profession, interestedSubject } = req.body;
+
+  // Basic validation
+  if (!id) {
+    return res.status(400).json({ msg: 'User ID is required' });
+  }
+
+  try {
+    // Find the user by ID
     let user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
 
     // Update the user's details
-    user.age = age || user.age;
-    user.contactNumber = contactNumber || user.contactNumber;
-    user.profilePhoto = profilePhoto || user.profilePhoto;
-    user.profession = profession || user.profession;
-    user.interestedSubject = interestedSubject || user.interestedSubject;
+    user.name = name !== undefined ? name : user.name;
+    user.age = age !== undefined ? age : user.age;
+    user.contactNumber = contactNumber !== undefined ? contactNumber : user.contactNumber;
+    user.profilePhoto = profilePhoto !== undefined ? profilePhoto : user.profilePhoto;
+    user.profession = profession !== undefined ? profession : user.profession;
+    user.interestedSubject = interestedSubject !== undefined ? interestedSubject : user.interestedSubject;
 
+    // Save the updated user
     await user.save();
 
+    // Respond with updated user details
     res.json({
       msg: 'User details updated successfully',
       user: {

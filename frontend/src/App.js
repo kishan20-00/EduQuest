@@ -9,6 +9,9 @@ import HomePage from './components/HomePage';
 import NavBar from './components/Navbar';
 import ProfilePage from './components/Profile';
 import Video from './components/Video';
+import AddCoursePage from './components/AddCourse';
+import ViewCoursesPage from './components/AllCourses';
+import AboutUsPage from './components/About';
 
 function App() {
 
@@ -38,6 +41,9 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/video" element={<Video />} />
+          <Route path="/addcourse" element={<AddCoursePage />} />
+          <Route path="/course" element={<ViewCoursesPage />} />
+          <Route path="/about" element={<AboutUsPage />} />
       </Routes>
       </ThemeProvider>
     </AuthProvider>
