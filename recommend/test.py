@@ -5,7 +5,7 @@ url = 'http://127.0.0.1:5000/predict'
 
 # Define the input data
 input_data = {
-    'subject': 'Artificial Intelligence and Machine Learning',
+    'subject': 'Database Management',
     'course_score': 75,
     'learning_score': 80,
     'quiz_score': 85

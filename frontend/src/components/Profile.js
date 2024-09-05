@@ -260,7 +260,7 @@ const handleUpdate = async () => {
             <Card>
               <CardContent>
                 <Typography variant="h5" component="div">
-                  Performance
+                  Recommend
                 </Typography>
                 <Typography variant="body1">
                   {userDetails.performance}
