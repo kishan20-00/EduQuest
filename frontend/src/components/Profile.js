@@ -122,7 +122,7 @@ const handleUpdate = async () => {
     }
   };
 
-  // Sachitha
+  // SachithaV
   const handleRecommendChange = (e) => {
     const { name, value } = e.target;
   
