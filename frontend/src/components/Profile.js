@@ -19,7 +19,7 @@ const ProfilePage = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   
-  // State for prediction inputs and results
+  // State for prediction inputs and results(Kavindu)
   const [predictionInputs, setPredictionInputs] = useState({
     "Proficiency level": '',
     "Preferred subjects": '',
@@ -33,6 +33,7 @@ const ProfilePage = () => {
     'Quiz scores': ''
   });
 
+  //Pasindu
   const [pathwayInputs, setPathwayInputs] = useState({
     "Subject": '',
     "Course Score": '',
@@ -40,6 +41,7 @@ const ProfilePage = () => {
     "Quiz Score": ''
   });
 
+  //Sachitha
   const [recommendInputs, setRecommendInputs] = useState({
     'subject': '',
     'course_score': '',
@@ -88,7 +90,7 @@ const handleUpdate = async () => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   }; 
 
-  // Handle input change for prediction form
+  // Kavindu
   const handlePredictionChange = (e) => {
     const { name, value } = e.target;
   
@@ -104,7 +106,7 @@ const handleUpdate = async () => {
     }
   };
 
-  // Handle input change for prediction form
+  // Pasindu
   const handlePathwayChange = (e) => {
     const { name, value } = e.target;
   
@@ -120,7 +122,7 @@ const handleUpdate = async () => {
     }
   };
 
-  // Handle input change for prediction form
+  // Sachitha
   const handleRecommendChange = (e) => {
     const { name, value } = e.target;
   
@@ -136,7 +138,7 @@ const handleUpdate = async () => {
     }
   };
 
-  // Handle form submission for prediction
+  // Handle form submission for prediction (Kavindu)
   const handlePredictionSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -147,7 +149,7 @@ const handleUpdate = async () => {
     }
   };
 
-  // Handle form submission for prediction
+  // Handle form submission for prediction (Pasindu)
   const handlePathwaySubmit = async (e) => {
     e.preventDefault();
     try {
@@ -159,7 +161,7 @@ const handleUpdate = async () => {
     }
   };
 
-  // Handle form submission for prediction
+  // Handle form submission for prediction (Sachitha)
   const handleRecommendSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -218,6 +220,7 @@ const handleUpdate = async () => {
           </Grid>
           <Grid item xs={12}>
             <Card>
+              {/* Pasindu */}
               <CardContent>
                 <Typography variant="h5" component="div">
                   Focus
@@ -258,6 +261,7 @@ const handleUpdate = async () => {
           </Grid>
           <Grid item xs={12}>
             <Card>
+              {/* Sachitha */}
               <CardContent>
                 <Typography variant="h5" component="div">
                   Recommend
@@ -292,6 +296,7 @@ const handleUpdate = async () => {
           </Grid>
           <Grid item xs={12}>
             <Card>
+              {/* Kavindu */}
               <CardContent>
                 <Typography variant="h5" component="div">
                   Progress
