@@ -1,7 +1,7 @@
 import requests
 
 # Define the URL of the Flask API
-url = 'http://127.0.0.1:5000/predict'
+url = 'http://127.0.0.1:5003/predict'
 
 # Define the input data
 input_data = {

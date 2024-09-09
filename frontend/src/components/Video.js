@@ -68,7 +68,7 @@ function Video() {
       axios.post('http://127.0.0.1:5000/predict', formData)
         .then(response => {
           const prediction = response.data.prediction;
-          setPredictions(prediction > 0.5 ? 'Focus' : 'Non Focus');
+          setPredictions(prediction > 0.6 ? 'Focus' : 'Non Focus');
         })
         .catch(error => {
           console.error('Error sending frame to server:', error);
