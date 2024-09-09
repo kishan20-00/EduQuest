@@ -1,12 +1,12 @@
 import requests
 
 # Define the URL of the Flask app
-url = 'http://127.0.0.1:5000/predict'
+url = 'http://127.0.0.1:5002/predict'
 
 # Example input data
 input_data = {
     'Proficiency level': 'Medium',
-    'Preferred subjects': 'Software',
+    'Preferred subjects': 'Cloud Computing',
     'Preferred study times': 'Morning',
     'Goals': 'Short-term',
     'Curriculum structure': 'Exam',

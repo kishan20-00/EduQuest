@@ -142,7 +142,7 @@ const handleUpdate = async () => {
   const handlePredictionSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:5000/predict', predictionInputs);
+      const response = await axios.post('http://127.0.0.1:5002/predict', predictionInputs);
       setPredictionResult(response.data.predicted_class);
     } catch (error) {
       console.error('Error making prediction:', error);
@@ -153,7 +153,7 @@ const handleUpdate = async () => {
   const handlePathwaySubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:5000/predict', pathwayInputs);
+      const response = await axios.post('http://127.0.0.1:5001/predict', pathwayInputs);
       setPredictionComplexity(response.data.Predicted_Complexity);
       setPredictionLearningContent(response.data.Predicted_Learning_Content);
     } catch (error) {
@@ -165,7 +165,7 @@ const handleUpdate = async () => {
   const handleRecommendSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:5000/predict', recommendInputs);
+      const response = await axios.post('http://127.0.0.1:5003/predict', recommendInputs);
       setPredictionRecommendation(response.data.recommendation);
     } catch (error) {
       console.error('Error making prediction:', error);
