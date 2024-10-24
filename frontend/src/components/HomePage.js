@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -31,6 +32,8 @@ const HomePage = () => {
     assignment: false,
     quiz: false
   });
+
+  const history = useNavigate(); 
 
   useEffect(() => {
     fetchCourses();
@@ -72,9 +75,9 @@ const HomePage = () => {
       return matchesSearchTerm && matchesComplexityFilter && matchesLearningMaterialFilter;
     });
 
-  const handleCardClick = (url) => {
-    window.open(url, '_blank');
-  };
+    const handleCardClick = (courseId) => {
+      history(`/course/${courseId}`);  // Navigate to the dynamic course details page
+    };
 
   return (
     <Box
@@ -85,9 +88,6 @@ const HomePage = () => {
       }}
     >
       <Container>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Welcome to the EduQuest
-        </Typography>
         <Typography variant="h5" component="h2" gutterBottom>
           Explore our courses in different areas of Information Technology
         </Typography>
@@ -139,7 +139,7 @@ const HomePage = () => {
           {filteredCourses.map((course) => (
             <Grid item key={course._id} xs={12} sm={6} md={4}>
               <Card 
-                onClick={() => handleCardClick(course.source)} 
+                onClick={() => handleCardClick(course._id)} 
                 sx={{ 
                   cursor: 'pointer',
                   height: '350px', // Fixed height for the card

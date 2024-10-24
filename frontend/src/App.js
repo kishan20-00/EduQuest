@@ -12,6 +12,8 @@ import Video from './components/Video';
 import AddCoursePage from './components/AddCourse';
 import ViewCoursesPage from './components/AllCourses';
 import AboutUsPage from './components/About';
+import CourseDetailsPage from './components/CourseDetailsPage';
+import AddSpecialization from './components/AddSpecialization';
 
 function App() {
 
@@ -44,6 +46,8 @@ function App() {
           <Route path="/addcourse" element={<AddCoursePage />} />
           <Route path="/course" element={<ViewCoursesPage />} />
           <Route path="/about" element={<AboutUsPage />} />
+          <Route path="/course/:id" element={<CourseDetailsPage />} />
+          <Route path="addspecial" element={<AddSpecialization />} />
       </Routes>
       </ThemeProvider>
     </AuthProvider>

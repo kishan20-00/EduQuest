@@ -25,7 +25,9 @@ const NavBar = ({ darkMode, setDarkMode }) => {
     <AppBar position="fixed">
       <Toolbar>
         <Box component={RouterLink} to="/" sx={{ textDecoration: 'none', color: 'inherit', marginRight: 2 }}>
-          <img src={logo} alt="EduQuest Logo" style={{ height: '40px' }} />
+        <Typography variant="body1"  sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
+        LearnPath +
+        </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant="body1" component={RouterLink} to="/" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>

@@ -9,13 +9,24 @@ const AddCoursePage = () => {
     complexity: '',
     image: '',
     learningMaterial: '',
-    source: '',
+    source: '', // For video, audio, pdf links
+    heading: '', // For text heading
+    textContent: '', // For text content
+    assignmentContent: '', // For assignment
+    quizQuestions: ['', '', '', '', ''], // For 5 quiz questions
+    quizAnswers: ['', '', '', '', ''], // For 5 quiz answers
     description: '',
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCourseContent({ ...courseContent, [name]: value });
+  };
+
+  const handleQuizChange = (index, field, value) => {
+    const updatedQuiz = [...courseContent[field]];
+    updatedQuiz[index] = value;
+    setCourseContent({ ...courseContent, [field]: updatedQuiz });
   };
 
   const handleSubmit = async (e) => {
@@ -28,8 +39,12 @@ const AddCoursePage = () => {
         contentName: '',
         learningMaterial: '',
         source: '',
+        heading: '',
+        textContent: '',
+        assignmentContent: '',
+        quizQuestions: ['', '', '', '', ''],
+        quizAnswers: ['', '', '', '', ''],
         description: '',
-        reviews: ''
       });
     } catch (error) {
       console.error('Error adding course content:', error.response?.data || error.message);
@@ -38,23 +53,14 @@ const AddCoursePage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        paddingTop: 8,
-        paddingBottom: 4,
-      }}
-    >
+    <Box sx={{ minHeight: '100vh', paddingTop: 8, paddingBottom: 4 }}>
       <Container>
         <Typography variant="h4" gutterBottom>
           Add Course Content
         </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ mt: 4 }}
-        >
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 4 }}>
           <Grid container spacing={2}>
+            {/* Common Input Fields */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -67,7 +73,7 @@ const AddCoursePage = () => {
               />
             </Grid>
             <Grid item xs={12}>
-            <FormControl fullWidth margin="normal" required>
+              <FormControl fullWidth margin="normal" required>
                 <InputLabel>Subject</InputLabel>
                 <Select
                   name="subject"
@@ -89,7 +95,7 @@ const AddCoursePage = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-            <FormControl fullWidth margin="normal" required>
+              <FormControl fullWidth margin="normal" required>
                 <InputLabel>Complexity</InputLabel>
                 <Select
                   name="complexity"
@@ -114,8 +120,10 @@ const AddCoursePage = () => {
                 required
               />
             </Grid>
+
+            {/* Dynamic Fields based on Learning Material */}
             <Grid item xs={12}>
-            <FormControl fullWidth margin="normal" required>
+              <FormControl fullWidth margin="normal" required>
                 <InputLabel>Learning Material</InputLabel>
                 <Select
                   name="learningMaterial"
@@ -132,17 +140,90 @@ const AddCoursePage = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Source"
-                name="source"
-                value={courseContent.source}
-                onChange={handleChange}
-                margin="normal"
-                required
-              />
-            </Grid>
+
+            {/* Conditional Fields */}
+            {courseContent.learningMaterial === 'video' || courseContent.learningMaterial === 'audio' || courseContent.learningMaterial === 'pdf' ? (
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Source Link"
+                  name="source"
+                  value={courseContent.source}
+                  onChange={handleChange}
+                  margin="normal"
+                  required
+                />
+              </Grid>
+            ) : courseContent.learningMaterial === 'text' ? (
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Heading"
+                    name="heading"
+                    value={courseContent.heading}
+                    onChange={handleChange}
+                    margin="normal"
+                    required
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Content"
+                    name="textContent"
+                    value={courseContent.textContent}
+                    onChange={handleChange}
+                    margin="normal"
+                    required
+                    multiline
+                    rows={4}
+                  />
+                </Grid>
+              </>
+            ) : courseContent.learningMaterial === 'assignment' ? (
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Assignment Content"
+                  name="assignmentContent"
+                  value={courseContent.assignmentContent}
+                  onChange={handleChange}
+                  margin="normal"
+                  required
+                  multiline
+                  rows={6}
+                />
+              </Grid>
+            ) : courseContent.learningMaterial === 'quiz' ? (
+              <>
+                {[...Array(5)].map((_, i) => (
+                  <Grid container spacing={2} key={i}>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label={`Question ${i + 1}`}
+                        value={courseContent.quizQuestions[i]}
+                        onChange={(e) => handleQuizChange(i, 'quizQuestions', e.target.value)}
+                        margin="normal"
+                        required
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label={`Answer ${i + 1}`}
+                        value={courseContent.quizAnswers[i]}
+                        onChange={(e) => handleQuizChange(i, 'quizAnswers', e.target.value)}
+                        margin="normal"
+                        required
+                      />
+                    </Grid>
+                  </Grid>
+                ))}
+              </>
+            ) : null}
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -156,6 +237,7 @@ const AddCoursePage = () => {
                 rows={4}
               />
             </Grid>
+
             <Grid item xs={12}>
               <Button variant="contained" type="submit">
                 Add Course Content

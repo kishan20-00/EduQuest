@@ -5,7 +5,7 @@ const Course = require('../models/CourseContent'); // Assuming you have a Course
 const router = express.Router();
 
 // Create a new specialization
-router.post('/', async (req, res) => {
+router.post('/add', async (req, res) => {
   const { name, courses } = req.body;
   const newSpecialization = new Specialization({ name, courses });
   
