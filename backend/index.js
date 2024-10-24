@@ -2,12 +2,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require("cors");
+const fs = require('fs');
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Create uploads directory if it doesn't exist
+const uploadDir = './uploads';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_CONNECT_URL)

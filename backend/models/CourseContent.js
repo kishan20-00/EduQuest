@@ -8,7 +8,7 @@ const courseSchema = new mongoose.Schema({
   learningMaterial: { type: String, required: true },
   source: { type: mongoose.Schema.Types.Mixed, required: true }, // Allow different types (string, object, etc.)
   description: { type: String, required: true },
-  reviews: { type: String }
+  reviews: { type: String },
 }, { timestamps: true });
 
 const Course = mongoose.model('Course', courseSchema);
