@@ -30,7 +30,7 @@ app.use('/api/auth', authRoutes);
 const courseContentRoutes = require('./routes/CourseController');
 app.use('/api/content', courseContentRoutes);
 
-const specializationRoutes = require('./routes/specializations');
+const specializationRoutes = require('./routes/SpecializationRoutes');
 app.use('/api/specializations', specializationRoutes);
 
 const PORT = process.env.PORT || 7000;
