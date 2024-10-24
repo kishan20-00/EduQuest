@@ -1,39 +1,11 @@
 const express = require('express');
-const multer = require('multer');
 const Course = require('../models/CourseContent');
 const router = express.Router();
 
-// Configure multer for file upload
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Specify the folder for uploaded files
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Customize the filename
-  },
-});
-
-const upload = multer({ storage });
-
 // Create a new course content
-router.post('/add', upload.single('source'), async (req, res) => {
+router.post('/add', async (req, res) => {
   try {
-    // Prepare the course data
-    const { contentName, subject, complexity, image, learningMaterial, description } = req.body;
-
-    // Check if the source is a file (from multer)
-    const source = req.file ? req.file.path : req.body.source; // Use file path or fallback to string
-
-    const course = new Course({
-      contentName,
-      subject,
-      complexity,
-      image,
-      learningMaterial,
-      source, // This will store the file path or the actual string content
-      description,
-    });
-
+    const course = new Course(req.body);
     await course.save();
     res.status(201).json(course);
   } catch (error) {

@@ -6,9 +6,9 @@ const courseSchema = new mongoose.Schema({
   complexity: { type: String, required: true },
   image: { type: String, required: true },
   learningMaterial: { type: String, required: true },
-  source: { type: mongoose.Schema.Types.Mixed, required: true }, // Allow different types (string, object, etc.)
+  source: { type: String, required: true },
   description: { type: String, required: true },
-  reviews: { type: String },
+  reviews: { type: String }
 }, { timestamps: true });
 
 const Course = mongoose.model('Course', courseSchema);
