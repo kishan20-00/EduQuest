@@ -7,6 +7,7 @@ const AddSpecialization = () => {
   const [name, setName] = useState('');
   const [subject, setSubject] = useState('');
   const [image, setImage] = useState('');
+  const [complexity, setComplexity] = useState('');
   const [courses, setCourses] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState(Array(5).fill(''));
 
@@ -35,7 +36,7 @@ const AddSpecialization = () => {
     }
 
     try {
-      await axios.post('https://edu-quest-hfoq.vercel.app/api/specializations/add', { name, subject, image, courses: validSelectedCourses });
+      await axios.post('https://edu-quest-hfoq.vercel.app/api/specializations/add', { name, subject, image, complexity, courses: validSelectedCourses });
       alert('Specialization added successfully!');
       // Reset the form or show a success message
       setName('');
@@ -80,6 +81,19 @@ const AddSpecialization = () => {
                   <MenuItem value="Network and System Administration">Network and System Administration</MenuItem>
                   <MenuItem value="Software Engineering and Development">Software Engineering and Development</MenuItem>
                   <MenuItem value="Web Development">Web Development</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth margin="normal" required>
+                <InputLabel>Complexity</InputLabel>
+                <Select
+                  name="complexity"
+                  value={complexity}
+                  onChange={(e) => setComplexity(e.target.value)}
+                  label="Complexity"
+                >
+                  <MenuItem value="beginner">Beginner</MenuItem>
+                  <MenuItem value="intermediate">Intermediate</MenuItem>
+                  <MenuItem value="advanced">Advanced</MenuItem>
                 </Select>
               </FormControl>
               <TextField
