@@ -14,6 +14,7 @@ import ViewCoursesPage from './components/AllCourses';
 import AboutUsPage from './components/About';
 import CourseDetailsPage from './components/CourseDetailsPage';
 import AddSpecialization from './components/AddSpecialization';
+import SpecializationDetail from './components/SpecializationDetail';
 
 function App() {
 
@@ -48,6 +49,7 @@ function App() {
           <Route path="/about" element={<AboutUsPage />} />
           <Route path="/course/:id" element={<CourseDetailsPage />} />
           <Route path="addspecial" element={<AddSpecialization />} />
+          <Route path="/specialization/:specializationId" element={<SpecializationDetail />} />
       </Routes>
       </ThemeProvider>
     </AuthProvider>
