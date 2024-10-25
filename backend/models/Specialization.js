@@ -6,4 +6,6 @@ const SpecializationSchema = new mongoose.Schema({
   courses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]
 });
 
-module.exports = mongoose.model('Specialization', SpecializationSchema);
+const Specialization = mongoose.model('Specialization', SpecializationSchema);
+
+module.exports = Specialization;
