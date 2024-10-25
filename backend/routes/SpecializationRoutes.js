@@ -3,6 +3,7 @@ const express = require('express');
 const Specialization = require('../models/Specialization');
 const Course = require('../models/CourseContent'); // Assuming you have a Course model
 const router = express.Router();
+const mongoose = require('mongoose');
 
 // Create a new specialization
 router.post('/add', async (req, res) => {
