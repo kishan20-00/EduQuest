@@ -143,6 +143,14 @@ const HomePage = () => {
           {specializations.map((specialization) => (
             <Grid item key={specialization._id} xs={12} sm={6} md={4}>
               <Card onClick={() => handleSpecializationClick(specialization._id)} sx={{ cursor: 'pointer' }}>
+                {specialization.image && (
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={specialization.image}
+                    alt={specialization.name}
+                  />
+                )}
                 <CardContent>
                   <Typography variant="h6">{specialization.name}</Typography>
                   <Typography variant="body2" color="textSecondary">
