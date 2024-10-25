@@ -14,15 +14,16 @@ import {
   CardContent,
   CardMedia,
 } from '@mui/material';
-import StarRating from './StarRating';  // Import the custom StarRating component
+import StarRating from './StarRating';
 
 const HomePage = () => {
   const [courses, setCourses] = useState([]);
+  const [specializations, setSpecializations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [complexityFilters, setComplexityFilters] = useState({
     beginner: false,
     intermediate: false,
-    advanced: false
+    advanced: false,
   });
   const [learningMaterialFilters, setLearningMaterialFilters] = useState({
     video: false,
@@ -30,13 +31,14 @@ const HomePage = () => {
     pdf: false,
     text: false,
     assignment: false,
-    quiz: false
+    quiz: false,
   });
 
-  const history = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCourses();
+    fetchSpecializations();
   }, []);
 
   const fetchCourses = async () => {
@@ -45,6 +47,15 @@ const HomePage = () => {
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);
+    }
+  };
+
+  const fetchSpecializations = async () => {
+    try {
+      const response = await axios.get('https://edu-quest-hfoq.vercel.app/api/specializations');
+      setSpecializations(response.data);
+    } catch (error) {
+      console.error('Error fetching specializations:', error);
     }
   };
 
@@ -62,36 +73,33 @@ const HomePage = () => {
     setLearningMaterialFilters({ ...learningMaterialFilters, [name]: checked });
   };
 
-  const filteredCourses = courses
-    .filter((course) => {
-      const matchesSearchTerm = course.contentName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesComplexityFilter = Object.keys(complexityFilters).some(
-        (key) => complexityFilters[key] && course.complexity === key
-      ) || Object.values(complexityFilters).every(value => !value);
-      const matchesLearningMaterialFilter = Object.keys(learningMaterialFilters).some(
-        (key) => learningMaterialFilters[key] && course.learningMaterial === key
-      ) || Object.values(learningMaterialFilters).every(value => !value);
+  const filteredCourses = courses.filter((course) => {
+    const matchesSearchTerm = course.contentName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesComplexityFilter =
+      Object.keys(complexityFilters).some((key) => complexityFilters[key] && course.complexity === key) ||
+      Object.values(complexityFilters).every((value) => !value);
+    const matchesLearningMaterialFilter =
+      Object.keys(learningMaterialFilters).some((key) => learningMaterialFilters[key] && course.learningMaterial === key) ||
+      Object.values(learningMaterialFilters).every((value) => !value);
 
-      return matchesSearchTerm && matchesComplexityFilter && matchesLearningMaterialFilter;
-    });
+    return matchesSearchTerm && matchesComplexityFilter && matchesLearningMaterialFilter;
+  });
 
-    const handleCardClick = (courseId) => {
-      history(`/course/${courseId}`);  // Navigate to the dynamic course details page
-    };
+  const handleCardClick = (courseId) => {
+    navigate(`/course/${courseId}`);
+  };
+
+  const handleSpecializationClick = (specializationId) => {
+    navigate(`/specialization/${specializationId}`);
+  };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        paddingTop: 8,
-        paddingBottom: 4,
-      }}
-    >
+    <Box sx={{ minHeight: '100vh', paddingTop: 8, paddingBottom: 4 }}>
       <Container>
         <Typography variant="h5" component="h2" gutterBottom>
           Explore our courses in different areas of Information Technology
         </Typography>
-        
+
         <Box sx={{ mb: 4 }}>
           <TextField
             label="Search by Content Name"
@@ -106,55 +114,55 @@ const HomePage = () => {
             {Object.keys(complexityFilters).map((key) => (
               <FormControlLabel
                 key={key}
-                control={
-                  <Checkbox
-                    name={key}
-                    checked={complexityFilters[key]}
-                    onChange={handleComplexityFilterChange}
-                  />
-                }
+                control={<Checkbox name={key} checked={complexityFilters[key]} onChange={handleComplexityFilterChange} />}
                 label={key.charAt(0).toUpperCase() + key.slice(1)}
               />
             ))}
           </FormGroup>
-          <Typography variant="h6" sx={{ mt: 4 }}>Filter by Learning Material</Typography>
+          <Typography variant="h6" sx={{ mt: 4 }}>
+            Filter by Learning Material
+          </Typography>
           <FormGroup row>
             {Object.keys(learningMaterialFilters).map((key) => (
               <FormControlLabel
                 key={key}
                 control={
-                  <Checkbox
-                    name={key}
-                    checked={learningMaterialFilters[key]}
-                    onChange={handleLearningMaterialFilterChange}
-                  />
+                  <Checkbox name={key} checked={learningMaterialFilters[key]} onChange={handleLearningMaterialFilterChange} />
                 }
                 label={key.charAt(0).toUpperCase() + key.slice(1)}
               />
             ))}
           </FormGroup>
         </Box>
-        
+
+        {/* Specializations Section */}
+        <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
+          Specializations
+        </Typography>
+        <Grid container spacing={4}>
+          {specializations.map((specialization) => (
+            <Grid item key={specialization._id} xs={12} sm={6} md={4}>
+              <Card onClick={() => handleSpecializationClick(specialization._id)} sx={{ cursor: 'pointer' }}>
+                <CardContent>
+                  <Typography variant="h6">{specialization.name}</Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Courses: {specialization.courses.length}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Courses Section */}
+        <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
+          Courses
+        </Typography>
         <Grid container spacing={4}>
           {filteredCourses.map((course) => (
             <Grid item key={course._id} xs={12} sm={6} md={4}>
-              <Card 
-                onClick={() => handleCardClick(course._id)} 
-                sx={{ 
-                  cursor: 'pointer',
-                  height: '350px', // Fixed height for the card
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
-              >
-                {course.image && (
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={course.image}
-                    alt={course.contentName}
-                  />
-                )}
+              <Card onClick={() => handleCardClick(course._id)} sx={{ cursor: 'pointer', height: '350px', display: 'flex', flexDirection: 'column' }}>
+                {course.image && <CardMedia component="img" height="140" image={course.image} alt={course.contentName} />}
                 <CardContent sx={{ flex: 1, overflow: 'hidden' }}>
                   <Typography variant="h6" noWrap>
                     {course.contentName}
