@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 // Create a new specialization
 router.post('/add', async (req, res) => {
-  const { name, subject, image, courses } = req.body;
+  const { name, subject, complexity, image, courses } = req.body;
 
   // Check if the specialization name is provided
   if (!name) {
@@ -22,7 +22,7 @@ router.post('/add', async (req, res) => {
     return res.status(400).json({ message: 'At least one valid course is required' });
   }
 
-  const newSpecialization = new Specialization({ name, subject, image, courses: validCourses });
+  const newSpecialization = new Specialization({ name, subject, complexity, image, courses: validCourses });
   
   try {
     await newSpecialization.save();
