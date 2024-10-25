@@ -42,4 +42,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get a single specialization by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const specialization = await Specialization.findById(req.params.id).populate('courses');
+    
+    if (!specialization) {
+      return res.status(404).json({ message: 'Specialization not found' });
+    }
+    
+    res.status(200).json(specialization);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;
