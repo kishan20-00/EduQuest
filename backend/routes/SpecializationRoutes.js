@@ -7,7 +7,21 @@ const router = express.Router();
 // Create a new specialization
 router.post('/add', async (req, res) => {
   const { name, courses } = req.body;
-  const newSpecialization = new Specialization({ name, courses });
+
+  // Check if the specialization name is provided
+  if (!name) {
+    return res.status(400).json({ message: 'Specialization name is required' });
+  }
+
+  // Filter out empty or invalid course IDs
+  const validCourses = courses.filter(courseId => courseId && mongoose.Types.ObjectId.isValid(courseId));
+
+  // Check if at least one valid course is provided
+  if (validCourses.length === 0) {
+    return res.status(400).json({ message: 'At least one valid course is required' });
+  }
+
+  const newSpecialization = new Specialization({ name, courses: validCourses });
   
   try {
     await newSpecialization.save();
