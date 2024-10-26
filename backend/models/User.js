@@ -29,6 +29,25 @@ const UserSchema = new mongoose.Schema({
   interestedSubject: {
     type: String,
   },
+  courseScore: {
+    type: String,
+  },
+  learningScore: {
+    type: String,
+    default: '100',
+  },
+  quizScore: {
+    type: String,
+  },
+  recommendedSub: {
+    type: String,
+  },
+  recommendedComplex: {
+    type: String,
+  },
+  recommendedContent: {
+    type: String,
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('EduUsers', UserSchema);
