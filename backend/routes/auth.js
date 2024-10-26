@@ -197,5 +197,26 @@ router.put('/updateLearningScore/:id', async (req, res) => {
   }
 });
 
+// Update Quiz Score
+router.put('/updateQuizScore/:id', async (req, res) => {
+  const { id } = req.params;
+  const { quizScore } = req.body;
+
+  try {
+    let user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+    // Update the quizScore
+    user.quizScore = quizScore !== undefined ? quizScore : user.quizScore;
+    await user.save();
+
+    res.json({ msg: 'Quiz score updated successfully', quizScore: user.quizScore });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
 
 module.exports = router;
