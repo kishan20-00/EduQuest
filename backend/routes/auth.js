@@ -97,7 +97,7 @@ router.get('/user/:id', async (req, res) => {
 // Update User Details by ID
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params; // Get the user ID from the URL parameters
-  const { name, age, contactNumber, profilePhoto, profession, interestedSubject } = req.body;
+  const { name, age, contactNumber, profilePhoto, profession, interestedSubject, courseScore, learningScore, quizScore, recommendedSub, recommendedComplex, recommendedContent } = req.body;
 
   // Basic validation
   if (!id) {
@@ -118,6 +118,12 @@ router.put('/update/:id', async (req, res) => {
     user.profilePhoto = profilePhoto !== undefined ? profilePhoto : user.profilePhoto;
     user.profession = profession !== undefined ? profession : user.profession;
     user.interestedSubject = interestedSubject !== undefined ? interestedSubject : user.interestedSubject;
+    user.courseScore= courseScore !== undefined ? courseScore : user.courseScore;
+    user.learningScore= learningScore !== undefined ? learningScore : user.learningScore;
+    user.quizScore= quizScore !== undefined ? quizScore : user.quizScore;
+    user.recommendedSub= recommendedSub !== undefined ? recommendedSub : user.recommendedSub;
+    user.recommendedComplex= recommendedComplex !== undefined ? recommendedComplex : user.recommendedComplex;
+    user.recommendedContent= recommendedContent !== undefined ? recommendedContent : user.recommendedContent;
 
     // Save the updated user
     await user.save();
@@ -133,6 +139,12 @@ router.put('/update/:id', async (req, res) => {
         profilePhoto: user.profilePhoto,
         profession: user.profession,
         interestedSubject: user.interestedSubject,
+        courseScore: user.courseScore,
+        learningScore: user.learningScore,
+        quizScore: user.quizScore,
+        recommendedSub: user.recommendedSub,
+        recommendedComplex: user.recommendedComplex,
+        recommendedContent: user.recommendedContent,
       }
     });
   } catch (err) {
@@ -140,5 +152,50 @@ router.put('/update/:id', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+// Update Course Score on Complete Button Click
+router.put('/updateCourseScore/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+    // Update courseScore and reset if it hits 100
+    let newCourseScore = (parseInt(user.courseScore) || 0) + 10;
+    if (newCourseScore >= 100) {
+      newCourseScore = 0;
+    }
+    user.courseScore = newCourseScore.toString();
+    await user.save();
+
+    res.json({ msg: 'Course score updated successfully', courseScore: user.courseScore });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Update Learning Score Based on Eye-Tracking
+router.put('/updateLearningScore/:id', async (req, res) => {
+  const { id } = req.params;
+  const { decrementValue } = req.body;
+
+  try {
+    let user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+    // Decrease learning score and ensure it doesn't go below 0
+    let newLearningScore = (parseInt(user.learningScore) || 100) - decrementValue;
+    user.learningScore = newLearningScore < 0 ? '0' : newLearningScore.toString();
+    await user.save();
+
+    res.json({ msg: 'Learning score updated successfully', learningScore: user.learningScore });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 
 module.exports = router;
