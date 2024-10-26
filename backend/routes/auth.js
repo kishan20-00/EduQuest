@@ -206,8 +206,12 @@ router.put('/updateQuizScore/:id', async (req, res) => {
     let user = await User.findById(id);
     if (!user) return res.status(404).json({ msg: 'User not found' });
 
-    // Update the quizScore
-    user.quizScore = quizScore !== undefined ? quizScore : user.quizScore;
+    // Update the quizScore and reset if it hits 100
+    let newQuizScore = quizScore !== undefined ? quizScore : user.quizScore;
+    if (newQuizScore >= 100) {
+      newQuizScore = 0;
+    }
+    user.quizScore = newQuizScore;
     await user.save();
 
     res.json({ msg: 'Quiz score updated successfully', quizScore: user.quizScore });
