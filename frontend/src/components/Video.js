@@ -1,27 +1,30 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 
-function EyeTrackingVideo({ isPlaying }) {
+const EyeTrackingVideo = forwardRef(({ isPlaying, isCompleted, userId }, ref) => {
   const videoRef = useRef(null);
   const [predictions, setPredictions] = useState('');
   const [sendingInterval, setSendingInterval] = useState(null);
   const [nonFocusCount, setNonFocusCount] = useState(0);
   const [counter, setCounter] = useState(0);
 
+  useImperativeHandle(ref, () => ({
+    getCounter: () => counter,  // Expose getCounter method to parent component
+  }));
+
   useEffect(() => {
-    if (isPlaying) {
+    if (isPlaying && !isCompleted) {
       startVideo();
       startSendingFrames();
     } else {
       stopVideo();
     }
 
-    // Clean up the interval on unmount or when isPlaying changes
     return () => {
       stopVideo();
       clearInterval(sendingInterval);
     };
-  }, [isPlaying]);
+  }, [isPlaying, isCompleted]);
 
   const startVideo = () => {
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -43,13 +46,13 @@ function EyeTrackingVideo({ isPlaying }) {
     clearInterval(sendingInterval);
 
     const intervalId = setInterval(() => {
-      sendFrameToServer();
+      if (!isCompleted) sendFrameToServer(); // Only send if not completed
     }, 1000);
     setSendingInterval(intervalId);
   };
 
   const sendFrameToServer = () => {
-    if (!videoRef.current || !videoRef.current.srcObject) return;
+    if (!videoRef.current || !videoRef.current.srcObject || isCompleted) return;
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
@@ -66,18 +69,17 @@ function EyeTrackingVideo({ isPlaying }) {
           const prediction = response.data.prediction;
           setPredictions(prediction > 0.6 ? 'Focus' : 'Non Focus');
 
-          // Update the nonFocusCount and counter
           if (prediction <= 0.6) {
             setNonFocusCount(prevCount => {
               const newCount = prevCount + 1;
               if (newCount >= 10) {
                 setCounter(prevCounter => prevCounter - 0.5);
-                return 0; // Reset count after hitting 10
+                return 0;  // Reset nonFocusCount after reaching 10
               }
               return newCount;
             });
           } else {
-            setNonFocusCount(0); // Reset count if Focus is received
+            setNonFocusCount(0);
           }
         })
         .catch(error => console.error('Error sending frame to server:', error));
@@ -97,6 +99,6 @@ function EyeTrackingVideo({ isPlaying }) {
       <p>Counter: {counter.toFixed(1)}</p>
     </div>
   );
-}
+});
 
 export default EyeTrackingVideo;
