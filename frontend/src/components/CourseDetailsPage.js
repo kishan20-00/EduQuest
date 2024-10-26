@@ -11,8 +11,11 @@ const CourseDetailsPage = () => {
   const [course, setCourse] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [points, setPoints] = useState(0);
+  const [quizScore, setQuizScore] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+  const [correctAnswers, setCorrectAnswers] = useState([]); // Track which answers are correct
   const [isCompleted, setIsCompleted] = useState(false);
-  const eyeTrackingRef = useRef(null); // Create a ref for EyeTrackingVideo
+  const eyeTrackingRef = useRef(null);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -49,32 +52,71 @@ const CourseDetailsPage = () => {
       return;
     }
   
-    let counterValue = 0; // Default value for counter
-  
-    // Get the counter value from EyeTrackingVideo only if it's rendered
+    let counterValue = 0;
     if (eyeTrackingRef.current) {
       counterValue = eyeTrackingRef.current.getCounter();
     }
   
     try {
-      const response = await fetch(`https://edu-quest-hfoq.vercel.app/api/auth/updateCourseScore/${user._id}`, {
-        method: 'PUT',
-      });
-      const data = await response.json();
-      if (response.ok) {
-        console.log('Course score updated:', data.msg);
-        // Now send counterValue to update learningScore
-        await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/updateLearningScore/${user._id}`, {
-          decrementValue: counterValue,
+      if (course.learningMaterial === 'quiz') {
+        checkAnswers(); // Calculate quiz score based on answers
+  
+        // Fetch the current quiz score
+        const userResponse = await axios.get(`https://edu-quest-hfoq.vercel.app/api/auth/user/${user._id}`);
+        const currentQuizScore = parseInt(userResponse.data.quizScore) || 0;
+  
+        // Update quizScore by adding the new score
+        const updatedQuizScore = currentQuizScore + quizScore;
+        await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/updateQuizScore/${user._id}`, {
+          quizScore: updatedQuizScore,
         });
+        console.log(`Quiz score updated to: ${updatedQuizScore}`);
+  
+        // Update courseScore as well when the material is a quiz
+        const courseScoreResponse = await fetch(`https://edu-quest-hfoq.vercel.app/api/auth/updateCourseScore/${user._id}`, {
+          method: 'PUT',
+        });
+        const courseScoreData = await courseScoreResponse.json();
+        if (courseScoreResponse.ok) {
+          console.log('Course score updated:', courseScoreData.msg);
+        } else {
+          console.error('Failed to update course score:', courseScoreData.msg);
+        }
+  
       } else {
-        console.error('Failed to update course score:', data.msg);
+        const response = await fetch(`https://edu-quest-hfoq.vercel.app/api/auth/updateCourseScore/${user._id}`, {
+          method: 'PUT',
+        });
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Course score updated:', data.msg);
+          await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/updateLearningScore/${user._id}`, {
+            decrementValue: counterValue,
+          });
+        } else {
+          console.error('Failed to update course score:', data.msg);
+        }
       }
     } catch (error) {
-      console.error('Error updating course score:', error);
+      console.error('Error updating scores:', error);
+    }
+  };  
+
+  const handleAnswerChange = (index, answer) => {
+    const newAnswers = [...userAnswers];
+    newAnswers[index] = answer.toLowerCase();
+    setUserAnswers(newAnswers);
+  };
+
+  const checkAnswers = () => {
+    if (course.quizAnswers && userAnswers.length === course.quizAnswers.length) {
+      const results = userAnswers.map((answer, index) => answer === course.quizAnswers[index].toLowerCase());
+      setCorrectAnswers(results); // Update correct answers based on user input
+      const score = results.reduce((acc, isCorrect) => acc + (isCorrect ? 5 : 0), 0);
+      setQuizScore(score);
+      console.log(`Your quiz score is: ${score}`);
     }
   };
-  
 
   if (!course) return <Typography>Loading...</Typography>;
 
@@ -84,7 +126,6 @@ const CourseDetailsPage = () => {
       <Typography variant="h6">Description:</Typography>
       <Typography>{course.description}</Typography>
 
-      {/* Video Playback */}
       {course.learningMaterial === 'video' && (
         <>
           <iframe
@@ -103,7 +144,6 @@ const CourseDetailsPage = () => {
         </>
       )}
 
-      {/* Audio Playback */}
       {course.learningMaterial === 'audio' && (
         <audio controls style={{ width: '100%' }}>
           <source src={course.source} type="audio/mpeg" />
@@ -112,12 +152,10 @@ const CourseDetailsPage = () => {
         </audio>
       )}
 
-      {/* PDF Display */}
       {course.learningMaterial === 'pdf' && (
         <iframe src={course.source} width="100%" height="600px" />
       )}
 
-      {/* Text Content */}
       {course.learningMaterial === 'text' && (
         <>
           <Typography variant="h6">Heading:</Typography>
@@ -127,25 +165,39 @@ const CourseDetailsPage = () => {
         </>
       )}
 
-      {/* Assignment */}
       {course.learningMaterial === 'assignment' && (
         <Typography variant="h6">Assignment Content: {course.assignmentContent}</Typography>
       )}
 
-      {/* Quiz */}
       {course.learningMaterial === 'quiz' && course.quizQuestions && (
         <>
           <Typography variant="h6">Quiz Questions:</Typography>
           {course.quizQuestions.map((question, index) => (
             <Box key={index} sx={{ marginBottom: 2 }}>
               <Typography>{index + 1}. {question}</Typography>
-              <input type="text" placeholder="Your answer" />
+              <input
+                type="text"
+                placeholder="Your answer"
+                onChange={(e) => handleAnswerChange(index, e.target.value)}
+              />
+              {correctAnswers.length > 0 && (
+                <Typography
+                  variant="body2"
+                  color={correctAnswers[index] ? 'green' : 'red'}
+                  sx={{ display: 'inline', marginLeft: '8px' }}
+                >
+                  {correctAnswers[index] ? '✓ Correct' : '✗ Incorrect'}
+                </Typography>
+              )}
             </Box>
           ))}
+          <Button variant="contained" color="primary" onClick={checkAnswers}>
+            Submit Answers
+          </Button>
+          {quizScore > 0 && <Typography>Your Quiz Score: {quizScore}</Typography>}
         </>
       )}
 
-      {/* Complete Button */}
       <Button
         variant="contained"
         color="secondary"
