@@ -206,8 +206,12 @@ router.put('/updateQuizScore/:id', async (req, res) => {
     let user = await User.findById(id);
     if (!user) return res.status(404).json({ msg: 'User not found' });
 
-    // Update the quizScore
-    user.quizScore = quizScore !== undefined ? quizScore : user.quizScore;
+    // Add the new quizScore to the existing score
+    const currentQuizScore = parseInt(user.quizScore) || 0;
+    const updatedQuizScore = currentQuizScore + quizScore;
+
+    // Update the user's quizScore in the database
+    user.quizScore = updatedQuizScore;
     await user.save();
 
     res.json({ msg: 'Quiz score updated successfully', quizScore: user.quizScore });
@@ -216,7 +220,6 @@ router.put('/updateQuizScore/:id', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
 
 
 module.exports = router;
