@@ -198,7 +198,6 @@ router.put('/updateLearningScore/:id', async (req, res) => {
 });
 
 // Update Quiz Score
-
 router.put('/updateQuizScore/:id', async (req, res) => {
   const { id } = req.params;
   const { quizScore } = req.body;
@@ -211,7 +210,6 @@ router.put('/updateQuizScore/:id', async (req, res) => {
     const currentQuizScore = parseInt(user.quizScore) || 0;
     const updatedQuizScore = currentQuizScore + quizScore;
 
-    // Update the user's quizScore in the database
     user.quizScore = updatedQuizScore;
     await user.save();
 
@@ -221,6 +219,7 @@ router.put('/updateQuizScore/:id', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
 
 
 
