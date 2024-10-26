@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Container, Grid, Card, CardContent, Avatar, TextField, Button } from '@mui/material';
+import { Box, Typography, Container, Grid, Card, CardContent, Avatar, TextField, Button, Select, MenuItem } from '@mui/material';
 import axios from 'axios';
+import GaugeChart from 'react-gauge-chart';
 
 const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState({
@@ -15,6 +16,9 @@ const ProfilePage = () => {
     focus: '',
     performance: '',
     progress: '',
+    courseScore: 0,
+    learningScore: 100,
+    quizScore: 0,
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -55,40 +59,48 @@ const ProfilePage = () => {
   const [predictionRecommendation, setPredictionRecommendation] = useState('');
 
   useEffect(() => {
-    // Fetch user data from localStorage
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      setUserDetails(storedUser);
-    }
+    const fetchUserDetails = async () => {
+      try {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (storedUser) {
+          const response = await axios.get(`https://edu-quest-hfoq.vercel.app/api/auth/user/${storedUser._id}`);
+          setUserDetails(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error.response?.data || error.message);
+      }
+    };
+
+    fetchUserDetails();
   }, []);
 
-// Function to update user details
-const updateUserDetails = async (userDetails) => {
-  try {
-    const response = await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, userDetails);
-    console.log('User details updated successfully:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating user details:', error.response?.data || error.message);
-    throw error;
-  }
-};
+  // Function to update user details
+  const updateUserDetails = async (userDetails) => {
+    try {
+      const response = await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, userDetails);
+      console.log('User details updated successfully:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating user details:', error.response?.data || error.message);
+      throw error;
+    }
+  };
 
-// Handle form submission
-const handleUpdate = async () => {
-  try {
-    await updateUserDetails(userDetails);
-    alert('User details updated successfully!');
-    localStorage.setItem('user', JSON.stringify(userDetails));
-    setIsEditing(false);
-  } catch (error) {
-    alert('Failed to update user details.');
-  }
-};
+  // Handle form submission
+  const handleUpdate = async () => {
+    try {
+      await updateUserDetails(userDetails);
+      alert('User details updated successfully!');
+      localStorage.setItem('user', JSON.stringify(userDetails));
+      setIsEditing(false);
+    } catch (error) {
+      alert('Failed to update user details.');
+    }
+  };
 
   const handleChange = (e) => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
-  }; 
+  };
 
   // Kavindu
   const handlePredictionChange = (e) => {
@@ -202,7 +214,54 @@ const handleUpdate = async () => {
             </Grid>
           </CardContent>
         </Card>
-        
+
+        {/* User Metrics */}
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  Scores
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    <Typography variant="body1">Course Score</Typography>
+                    <GaugeChart 
+                      id="gauge-course-score"
+                      nrOfLevels={5}
+                      arcsLength={[0.2, 0.4, 0.4]}
+                      colors={['#FF0000', '#FFFF00', '#00FF00']}
+                      percent={userDetails.courseScore / 100} // Normalize score to a percentage
+                      style={{ width: '100%' }}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography variant="body1">Learning Score</Typography>
+                    <GaugeChart 
+                      id="gauge-learning-score"
+                      nrOfLevels={5}
+                      arcsLength={[0.2, 0.4, 0.4]}
+                      colors={['#FF0000', '#FFFF00', '#00FF00']}
+                      percent={userDetails.learningScore / 100} // Normalize score to a percentage
+                      style={{ width: '100%' }}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Typography variant="body1">Quiz Score</Typography>
+                    <GaugeChart 
+                      id="gauge-quiz-score"
+                      nrOfLevels={5}
+                      arcsLength={[0.2, 0.4, 0.4]}
+                      colors={['#FF0000', '#FFFF00', '#00FF00']}
+                      percent={userDetails.quizScore / 100} // Normalize score to a percentage
+                      style={{ width: '100%' }}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
         {/* User Metrics */}
         <Grid container spacing={4}>
           {/* Display user metrics (Scores, Focus, Performance, Progress) */}
@@ -339,69 +398,53 @@ const handleUpdate = async () => {
             <Box component="form">
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Name"
-                    name="name"
-                    value={userDetails.name}
-                    onChange={handleChange}
-                  />
+                  <TextField fullWidth label="Name" name="name" value={userDetails.name} onChange={handleChange} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    name="email"
-                    value={userDetails.email}
-                    onChange={handleChange}
-                    disabled
-                  />
+                  <TextField fullWidth label="Email" name="email" value={userDetails.email} onChange={handleChange} disabled />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Age"
-                    name="age"
-                    value={userDetails.age}
-                    onChange={handleChange}
-                  />
+                  <TextField fullWidth label="Age" name="age" value={userDetails.age} onChange={handleChange} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Contact Number"
-                    name="contactNumber"
-                    value={userDetails.contactNumber}
-                    onChange={handleChange}
-                  />
+                  <TextField fullWidth label="Contact Number" name="contactNumber" value={userDetails.contactNumber} onChange={handleChange} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Profession"
-                    name="profession"
-                    value={userDetails.profession}
-                    onChange={handleChange}
-                  />
+                  <TextField fullWidth label="Profession" name="profession" value={userDetails.profession} onChange={handleChange} />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField
+                  <Select
                     fullWidth
                     label="Interested Subject"
                     name="interestedSubject"
                     value={userDetails.interestedSubject}
                     onChange={handleChange}
-                  />
+                    displayEmpty
+                  >
+                    <MenuItem value="" disabled>
+                      Select Interested Subject
+                    </MenuItem>
+                    <MenuItem value="Artificial Intelligence and Machine Learning">Artificial Intelligence and Machine Learning</MenuItem>
+                    <MenuItem value="Cloud Computing">Cloud Computing</MenuItem>
+                    <MenuItem value="CyberSecurity">CyberSecurity</MenuItem>
+                    <MenuItem value="Data Science and Analytics">Data Science and Analytics</MenuItem>
+                    <MenuItem value="Database Management">Database Management</MenuItem>
+                    <MenuItem value="Devops and Systems Integration">Devops and Systems Integration</MenuItem>
+                    <MenuItem value="IT Project Management">IT Project Management</MenuItem>
+                    <MenuItem value="Network and System Administration">Network and System Administration</MenuItem>
+                    <MenuItem value="Software Engineering and Development">Software Engineering and Development</MenuItem>
+                    <MenuItem value="Web Development">Web Development</MenuItem>
+                  </Select>
                 </Grid>
                 <Grid item xs={12}>
-                <TextField
-              fullWidth
-              label="Profile Photo URL"
-              name="profilePhoto"
-              value={userDetails.profilePhoto}
-              onChange={handleChange}
-              margin="normal"
-            />
+                  <TextField
+                    fullWidth
+                    label="Profile Photo URL"
+                    name="profilePhoto"
+                    value={userDetails.profilePhoto}
+                    onChange={handleChange}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={12}>
                   <Button variant="contained" onClick={handleUpdate}>

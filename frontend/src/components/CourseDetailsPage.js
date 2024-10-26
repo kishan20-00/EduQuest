@@ -1,23 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, Button } from '@mui/material';
 import EyeTrackingVideo from './Video';
+import AuthContext from '../contexts/AuthContext';
 
 const CourseDetailsPage = () => {
-  const { id } = useParams(); // Get the course ID from the URL
+  const { id } = useParams();
+  const { user } = useContext(AuthContext);
   const [course, setCourse] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [finalCounter, setFinalCounter] = useState(0);
+  const [points, setPoints] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const eyeTrackingRef = useRef(null); // Create a ref for EyeTrackingVideo
 
   useEffect(() => {
     const fetchCourse = async () => {
       try {
         const response = await axios.get(`https://edu-quest-hfoq.vercel.app/api/content/${id}`);
         setCourse(response.data);
-        // Start eye-tracking automatically if learning material is a video
         if (response.data.learningMaterial === 'video') {
-          setIsPlaying(true); // Autoplay eye-tracking video
+          setIsPlaying(true);
         }
       } catch (error) {
         console.error('Error fetching course:', error);
@@ -27,14 +30,53 @@ const CourseDetailsPage = () => {
     fetchCourse();
   }, [id]);
 
-  const handleCourseVideoPlay = () => setIsPlaying(true); // Start eye-tracking when video plays
-  const handleCourseVideoPause = () => setIsPlaying(false); // Stop eye-tracking when video pauses or ends
+  const handleCourseVideoPlay = () => setIsPlaying(true);
+  const handleCourseVideoPause = () => setIsPlaying(false);
 
   const handleCompleted = () => {
-    setIsPlaying(false); // Stop eye-tracking when completed
+    if (!isCompleted) {
+      if (course.learningMaterial === 'video') {
+        setIsPlaying(false);
+      }
+      setPoints(points + 10);
+      setIsCompleted(true);
+    }
   };
 
-  if (!course) return <Typography>Loading...</Typography>; // Display loading text while fetching
+  const handleCompleteClick = async () => {
+    if (!user) {
+      console.error('User is not authenticated.');
+      return;
+    }
+  
+    let counterValue = 0; // Default value for counter
+  
+    // Get the counter value from EyeTrackingVideo only if it's rendered
+    if (eyeTrackingRef.current) {
+      counterValue = eyeTrackingRef.current.getCounter();
+    }
+  
+    try {
+      const response = await fetch(`https://edu-quest-hfoq.vercel.app/api/auth/updateCourseScore/${user._id}`, {
+        method: 'PUT',
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Course score updated:', data.msg);
+        // Now send counterValue to update learningScore
+        await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/updateLearningScore/${user._id}`, {
+          decrementValue: counterValue,
+        });
+      } else {
+        console.error('Failed to update course score:', data.msg);
+      }
+    } catch (error) {
+      console.error('Error updating course score:', error);
+    }
+  };
+  
+
+  if (!course) return <Typography>Loading...</Typography>;
 
   return (
     <Box>
@@ -55,13 +97,9 @@ const CourseDetailsPage = () => {
             allowFullScreen
             onPlay={handleCourseVideoPlay}
             onPause={handleCourseVideoPause}
-            onEnded={handleCourseVideoPause} // Stop tracking on video end
+            onEnded={handleCourseVideoPause}
           />
-          {/* Eye Tracking Video component */}
-          <EyeTrackingVideo isPlaying={isPlaying} />
-          <Button variant="contained" color="secondary" onClick={handleCompleted}>
-            Complete
-          </Button>
+          <EyeTrackingVideo ref={eyeTrackingRef} isPlaying={isPlaying} isCompleted={isCompleted} userId={user?._id} />
         </>
       )}
 
@@ -89,12 +127,12 @@ const CourseDetailsPage = () => {
         </>
       )}
 
-      {/* Handling Assignments */}
+      {/* Assignment */}
       {course.learningMaterial === 'assignment' && (
         <Typography variant="h6">Assignment Content: {course.assignmentContent}</Typography>
       )}
 
-      {/* Handling Quizzes */}
+      {/* Quiz */}
       {course.learningMaterial === 'quiz' && course.quizQuestions && (
         <>
           <Typography variant="h6">Quiz Questions:</Typography>
@@ -106,6 +144,20 @@ const CourseDetailsPage = () => {
           ))}
         </>
       )}
+
+      {/* Complete Button */}
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={() => {
+          handleCompleted();
+          handleCompleteClick();
+        }}
+        disabled={isCompleted}
+      >
+        Complete
+      </Button>
+      {isCompleted && <Typography>Points: {points}</Typography>}
     </Box>
   );
 };
