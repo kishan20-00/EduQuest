@@ -97,7 +97,7 @@ router.get('/user/:id', async (req, res) => {
 // Update User Details by ID
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params; // Get the user ID from the URL parameters
-  const { name, age, contactNumber, profilePhoto, profession, interestedSubject, courseScore, learningScore, quizScore, recommendedSub, recommendedComplex, recommendedContent, preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
+  const { name, age, contactNumber, profilePhoto, profession, interestedSubject, courseScore, learningScore, quizScore, recommendedSub, recommendedComplex, recommendedContent, preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent, learningStyle } = req.body;
 
   // Basic validation
   if (!id) {
@@ -129,6 +129,7 @@ router.put('/update/:id', async (req, res) => {
     user.curriculumStructure= curriculumStructure !== undefined ? curriculumStructure : user.curriculumStructure;
     user.externalFactor= externalFactor !== undefined ? externalFactor : user.externalFactor;
     user.timeSpentOnContent= timeSpentOnContent !== undefined ? timeSpentOnContent : user.timeSpentOnContent;
+    user.learningStyle= learningStyle !== undefined ? learningStyle : user.learningStyle;
 
     // Save the updated user
     await user.save();
@@ -155,6 +156,7 @@ router.put('/update/:id', async (req, res) => {
         curriculumStructure: user.curriculumStructure,
         externalFactor: user.externalFactor,
         timeSpentOnContent: user.timeSpentOnContent,
+        learningStyle: user.learningStyle,
       }
     });
   } catch (err) {
