@@ -56,4 +56,18 @@ router.delete('/delete/:id', async (req, res) => {
   }
 });
 
+// Get all course content by subject
+router.get('/filter/:subject', async (req, res) => {
+  const subject = req.params.subject; // Access subject directly from req.params
+  
+  try {
+    const courses = await Course.find(subject ? { subject } : {}); // Filter by subject if provided
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
 module.exports = router;

@@ -57,4 +57,17 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Get all specializations by subject
+router.get('/filter/:subject', async (req, res) => {
+  const { subject } = req.params; // Access subject directly from req.params
+  
+  try {
+    const specializations = await Specialization.find(subject ? { subject } : {}).populate('courses'); // Filter by subject if provided
+    res.status(200).json(specializations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 module.exports = router;
