@@ -48,7 +48,6 @@ const UserSchema = new mongoose.Schema({
   recommendedContent: {
     type: String,
   },
-  // New Monitoring Fields
   preferredStudyTime: { type: String },
   goal: { type: String },
   curriculumStructure: { type: String },

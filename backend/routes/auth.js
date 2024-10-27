@@ -97,7 +97,7 @@ router.get('/user/:id', async (req, res) => {
 // Update User Details by ID
 router.put('/update/:id', async (req, res) => {
   const { id } = req.params; // Get the user ID from the URL parameters
-  const { name, age, contactNumber, profilePhoto, profession, interestedSubject, courseScore, learningScore, quizScore, recommendedSub, recommendedComplex, recommendedContent } = req.body;
+  const { name, age, contactNumber, profilePhoto, profession, interestedSubject, courseScore, learningScore, quizScore, recommendedSub, recommendedComplex, recommendedContent, preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
 
   // Basic validation
   if (!id) {
@@ -124,6 +124,11 @@ router.put('/update/:id', async (req, res) => {
     user.recommendedSub= recommendedSub !== undefined ? recommendedSub : user.recommendedSub;
     user.recommendedComplex= recommendedComplex !== undefined ? recommendedComplex : user.recommendedComplex;
     user.recommendedContent= recommendedContent !== undefined ? recommendedContent : user.recommendedContent;
+    user.preferredStudyTime= preferredStudyTime !== undefined ? preferredStudyTime : user.preferredStudyTime;
+    user.goal= goal !== undefined ? goal : user.goal;
+    user.curriculumStructure= curriculumStructure !== undefined ? curriculumStructure : user.curriculumStructure;
+    user.externalFactor= externalFactor !== undefined ? externalFactor : user.externalFactor;
+    user.timeSpentOnContent= timeSpentOnContent !== undefined ? timeSpentOnContent : user.timeSpentOnContent;
 
     // Save the updated user
     await user.save();
@@ -145,6 +150,11 @@ router.put('/update/:id', async (req, res) => {
         recommendedSub: user.recommendedSub,
         recommendedComplex: user.recommendedComplex,
         recommendedContent: user.recommendedContent,
+        timeSpentOnContent: user.timeSpentOnContent,
+        goal: user.goal,
+        curriculumStructure: user.curriculumStructure,
+        externalFactor: user.externalFactor,
+        timeSpentOnContent: user.timeSpentOnContent,
       }
     });
   } catch (err) {
@@ -226,7 +236,7 @@ router.put('/update-monitoring/:id', async (req, res) => {
   const { preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
 
   try {
-    await EduUsers.findByIdAndUpdate(id, {  // Use the `id` from the URL parameter
+    await User.findByIdAndUpdate(id, {  // Use the `id` from the URL parameter
       preferredStudyTime,
       goal,
       curriculumStructure,
