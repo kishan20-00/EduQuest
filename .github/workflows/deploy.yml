@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        with:
-          path: /recommend
 
       - name: Deploy to Heroku
         env:
@@ -21,7 +19,7 @@ jobs:
           HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
           HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
         run: |
-          cd recommend  # Navigate to your subdirectory
+          cd recommend  # Update this line to point to your subdirectory
           git init
           heroku git:remote -a $HEROKU_APP_NAME
           git add .
