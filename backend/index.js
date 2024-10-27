@@ -33,6 +33,9 @@ app.use('/api/content', courseContentRoutes);
 const specializationRoutes = require('./routes/SpecializationRoutes');
 app.use('/api/specializations', specializationRoutes);
 
+const reviewRoutes = require('./routes/ReviewRoutes');
+app.use('/api/reviews', reviewRoutes);
+
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
