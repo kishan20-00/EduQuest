@@ -17,8 +17,13 @@ def predict():
     # Get the JSON data from the request
     data = request.json
 
-    # Create a DataFrame from the input data
-    input_data = pd.DataFrame([data])
+    # Map frontend variable names to backend DataFrame columns
+    input_data = pd.DataFrame([{
+        'Subject': data['interestedSubject'],
+        'Course Score': data['courseScore'],
+        'Learning Score': data['learningScore'],
+        'Quiz Score': data['quizScore']
+    }])
 
     # Encode categorical variables
     categorical_cols = ['Subject']
