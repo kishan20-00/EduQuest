@@ -48,6 +48,12 @@ const UserSchema = new mongoose.Schema({
   recommendedContent: {
     type: String,
   },
+  // New Monitoring Fields
+  preferredStudyTime: { type: String },
+  goal: { type: String },
+  curriculumStructure: { type: String },
+  externalFactor: { type: String },
+  timeSpentOnContent: { type: Number }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model('EduUsers', UserSchema);
