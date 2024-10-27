@@ -222,8 +222,7 @@ router.put('/updateQuizScore/:id', async (req, res) => {
 });
 
 router.put('/update-monitoring', async (req, res) => {
-  const { userId } = req.user;
-  const { preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
+  const { userId, preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
 
   try {
     await EduUsers.findByIdAndUpdate(userId, {
