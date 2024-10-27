@@ -25,4 +25,20 @@ router.get('/:courseId', async (req, res) => {
   }
 });
 
+// Calculate average rating for a specific course
+router.get('/average/:courseId', async (req, res) => {
+  try {
+    const reviews = await Review.find({ courseId: req.params.courseId });
+    
+    // Calculate average rating
+    const averageRating = reviews.length > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
+      : 0;
+
+    res.status(200).json({ averageRating });
+  } catch (error) {
+    res.status(400).json({ message: 'Error calculating average rating', error });
+  }
+});
+
 module.exports = router;
