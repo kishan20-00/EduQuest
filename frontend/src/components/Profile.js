@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid, Card, CardContent, Avatar, TextField, Button, Select, MenuItem } from '@mui/material';
 import axios from 'axios';
 import GaugeChart from 'react-gauge-chart';
+import { School, BarChart, LibraryBooks } from '@mui/icons-material'; // Icons for recommendation sections
 
 const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState({
@@ -22,41 +23,23 @@ const ProfilePage = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  
-  // State for prediction inputs and results(Kavindu)
-  const [predictionInputs, setPredictionInputs] = useState({
-    "Proficiency level": '',
-    "Preferred subjects": '',
-    "Preferred study times": '',
-    "Goals": '',
-    "Curriculum structure": '',
-    "Available content": '',
-    "External factors": '',
-    'Time spent on different types of content': '',
-    'Completion rates': '',
-    'Quiz scores': ''
-  });
-
-  //Pasindu
-  const [pathwayInputs, setPathwayInputs] = useState({
-    "Subject": '',
-    "Course Score": '',
-    "Learning Score": '',
-    "Quiz Score": ''
-  });
-
-  //Sachitha
-  const [recommendInputs, setRecommendInputs] = useState({
-    'subject': '',
-    'course_score': '',
-    'learning_score': '',
-    'quiz_score': ''
-  });
-  
-  const [predictionResult, setPredictionResult] = useState('');
-  const [predictionComplexity, setPredictionComplexity] = useState('');
-  const [predictionLearningContent, setPredictionLearningContent] = useState('');
-  const [predictionRecommendation, setPredictionRecommendation] = useState('');
+  const [courseScore, setCourseScore] = useState(0);
+  const [quizScore, setQuizScore] = useState(0);
+  const [learningScore, setLearningScore] = useState(0);
+  const [interestedSubject, setInterestedSubject] = useState("");
+  const [recommendedSub, setRecommendedSub] = useState("");
+  const [recommendedComplex, setRecommendedComplex] = useState("");
+  const [recommendedContent, setRecommendedContent] = useState("");
+  const [preferredStudyTime, setPreferredStudyTime] = useState("");
+  const [goal, setGoal] = useState("");
+  const [curriculumStructure, setCurriculumStructure] = useState("");
+  const [externalFactor, setExternalFactor] = useState("");
+  const [timeSpentOnContent, setTimeSpentOnContent] = useState("");
+  const [proficiencyLevel, setProficiencyLevel] = useState("");
+  const [preferredSubject, setPreferredSubject] = useState("");
+  const [availableContent, setAvailableContent] = useState("");
+  const [completeRates, setCompletionRates] = useState("");
+  const [learningStyle, setLearningStyle] = useState("");
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -65,6 +48,24 @@ const ProfilePage = () => {
         if (storedUser) {
           const response = await axios.get(`https://edu-quest-hfoq.vercel.app/api/auth/user/${storedUser._id}`);
           setUserDetails(response.data);
+          const userData = response.data;
+
+          setCourseScore(userData.courseScore);
+          setQuizScore(userData.quizScore);
+          setLearningScore(userData.learningScore);
+          setInterestedSubject(userData.interestedSubject);
+          setPreferredStudyTime(userData.preferredStudyTime);
+          setGoal(userData.goal);
+          setCurriculumStructure(userData.curriculumStructure);
+          setExternalFactor(userData.externalFactor);
+          setTimeSpentOnContent(userData.timeSpentOnContent);
+          setPreferredSubject(userData.interestedSubject);
+          setCompletionRates(userData.learningScore);
+
+          // Fetch recommendations in sequence
+          await handlePathwayInput(userData.courseScore, userData.quizScore, userData.learningScore, userData.interestedSubject);
+          await handleRecommendInput(userData.courseScore, userData.quizScore, userData.learningScore, userData.interestedSubject);
+          await handleLearningInput(userData.quizScore, userData.preferredStudyTime, userData.goal, userData.curriculumStructure, userData.externalFactor, userData.timeSpentOnContent, userData.recommendedComplex, userData.interestedSubject, userData.recommendedContent, userData.learningScore);
         }
       } catch (error) {
         console.error('Error fetching user details:', error.response?.data || error.message);
@@ -74,7 +75,6 @@ const ProfilePage = () => {
     fetchUserDetails();
   }, []);
 
-  // Function to update user details
   const updateUserDetails = async (userDetails) => {
     try {
       const response = await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, userDetails);
@@ -86,7 +86,6 @@ const ProfilePage = () => {
     }
   };
 
-  // Handle form submission
   const handleUpdate = async () => {
     try {
       await updateUserDetails(userDetails);
@@ -102,85 +101,76 @@ const ProfilePage = () => {
     setUserDetails({ ...userDetails, [e.target.name]: e.target.value });
   };
 
-  // Kavindu
-  const handlePredictionChange = (e) => {
-    const { name, value } = e.target;
-  
-    // Convert specific fields to numbers
-    if (
-      name === 'Time spent on different types of content' ||
-      name === 'Completion rates' ||
-      name === 'Quiz scores'
-    ) {
-      setPredictionInputs({ ...predictionInputs, [name]: Number(value) });
-    } else {
-      setPredictionInputs({ ...predictionInputs, [name]: value });
-    }
-  };
-
-  // Pasindu
-  const handlePathwayChange = (e) => {
-    const { name, value } = e.target;
-  
-    // Convert specific fields to numbers
-    if (
-      name === 'Course Score' ||
-      name === 'Learning Score' ||
-      name === 'Quiz Score'
-    ) {
-      setPathwayInputs({ ...pathwayInputs, [name]: Number(value) });
-    } else {
-      setPathwayInputs({ ...pathwayInputs, [name]: value });
-    }
-  };
-
-  // SachithaV
-  const handleRecommendChange = (e) => {
-    const { name, value } = e.target;
-  
-    // Convert specific fields to numbers
-    if (
-      name === 'course_score' ||
-      name === 'learning_score' ||
-      name === 'quiz_score'
-    ) {
-      setRecommendInputs({ ...recommendInputs, [name]: Number(value) });
-    } else {
-      setRecommendInputs({ ...recommendInputs, [name]: value });
-    }
-  };
-
-  // Handle form submission for prediction (Kavindu)
-  const handlePredictionSubmit = async (e) => {
-    e.preventDefault();
+  //Kavindu
+  const handleLearningInput = async (quizScore, preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent, proficiencyLevel, preferredSubject, availableContent, completeRates) => {
     try {
-      const response = await axios.post('http://127.0.0.1:5002/predict', predictionInputs);
-      setPredictionResult(response.data.predicted_class);
+      const response = await axios.post("http://127.0.0.1:5002/predict", {
+        quizScore,
+        preferredStudyTime, 
+        goal, 
+        curriculumStructure, 
+        externalFactor, 
+        timeSpentOnContent, 
+        proficiencyLevel, 
+        preferredSubject, 
+        availableContent, 
+        completeRates
+      });
+
+      const learningStyle = response.data.predicted_class;
+
+      setLearningStyle(learningStyle);
+      await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, {
+        learningStyle: learningStyle
+      });
     } catch (error) {
-      console.error('Error making prediction:', error);
+      console.error("Error fetching recommendation:", error);
     }
   };
 
-  // Handle form submission for prediction (Pasindu)
-  const handlePathwaySubmit = async (e) => {
-    e.preventDefault();
+  //Pasindu
+  const handlePathwayInput = async (courseScore, quizScore, learningScore, interestedSubject) => {
     try {
-      const response = await axios.post('http://127.0.0.1:5001/predict', pathwayInputs);
-      setPredictionComplexity(response.data.Predicted_Complexity);
-      setPredictionLearningContent(response.data.Predicted_Learning_Content);
+      const response = await axios.post("http://127.0.0.1:5001/predict", {
+        courseScore,
+        quizScore,
+        learningScore,
+        interestedSubject
+      });
+
+      const recommendedComplex = response.data.Predicted_Complexity;
+      const recommendedContent = response.data.Predicted_Learning_Content;
+
+      setRecommendedComplex(recommendedComplex);
+      setRecommendedContent(recommendedContent);
+      await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, {
+        recommendedComplex: recommendedComplex,
+        recommendedContent: recommendedContent
+      });
     } catch (error) {
-      console.error('Error making prediction:', error);
+      console.error("Error fetching recommendation:", error);
     }
   };
 
-  // Handle form submission for prediction (Sachitha)
-  const handleRecommendSubmit = async (e) => {
-    e.preventDefault();
+
+  //Sachitha
+  const handleRecommendInput = async (courseScore, quizScore, learningScore, interestedSubject) => {
     try {
-      const response = await axios.post('http://127.0.0.1:5003/predict', recommendInputs);
-      setPredictionRecommendation(response.data.recommendation);
+      const response = await axios.post("http://127.0.0.1:5003/predict", {
+        courseScore,
+        quizScore,
+        learningScore,
+        interestedSubject
+      });
+
+      const recommendedSubject = response.data.recommendation;
+
+      setRecommendedSub(recommendedSubject);
+      await axios.put(`https://edu-quest-hfoq.vercel.app/api/auth/update/${userDetails._id}`, {
+        recommendedSub: recommendedSubject
+      });
     } catch (error) {
-      console.error('Error making prediction:', error);
+      console.error("Error fetching recommendation:", error);
     }
   };
 
@@ -210,6 +200,7 @@ const ProfilePage = () => {
                 <Typography variant="body2">Contact Number: {userDetails.contactNumber}</Typography>
                 <Typography variant="body2">Profession: {userDetails.profession}</Typography>
                 <Typography variant="body2">Interested Subject: {userDetails.interestedSubject}</Typography>
+                <Typography variant="body2">Learning Style: {userDetails.learningStyle}</Typography>
               </Grid>
             </Grid>
           </CardContent>
@@ -262,136 +253,31 @@ const ProfilePage = () => {
             </Card>
           </Grid>
         </Grid>
-        {/* User Metrics */}
-        <Grid container spacing={4}>
-          {/* Display user metrics (Scores, Focus, Performance, Progress) */}
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Scores
-                </Typography>
-                <Typography variant="body1">
-                  {userDetails.scores}
-                </Typography>
-              </CardContent>
-            </Card>
+        
+        {/* Recommendation Boxes */}
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ border: 1, borderRadius: 2, padding: 2, textAlign: 'center' }}>
+              <School sx={{ fontSize: 40, color: 'primary.main' }} />
+              <Typography variant="h6">Recommended Subject</Typography>
+              <Typography variant="body1" color="textSecondary">{recommendedSub || 'Not Available'}</Typography>
+            </Box>
           </Grid>
-          <Grid item xs={12}>
-            <Card>
-              {/* Pasindu */}
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Focus
-                </Typography>
-                <Typography variant="body1">
-                  {userDetails.focus}
-                </Typography>
-
-                <form onSubmit={handlePathwaySubmit}>
-                  {Object.keys(pathwayInputs).map((key) => (
-                    <div key={key}>
-                      <TextField
-                        fullWidth
-                        label={key}
-                        name={key}
-                        value={pathwayInputs[key]}
-                        onChange={handlePathwayChange}
-                        margin="normal"
-                      />
-                    </div>
-                  ))}
-                  <Button variant="contained" type="submit">Predict</Button>
-                </form>
-
-                {/* Display Prediction Result */}
-                {predictionComplexity && (
-                  <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                    Predicted Complexity: {predictionComplexity}
-                  </Typography>
-                )}
-                {predictionLearningContent && (
-                  <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                    Predicted Learning Content: {predictionLearningContent}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ border: 1, borderRadius: 2, padding: 2, textAlign: 'center' }}>
+              <BarChart sx={{ fontSize: 40, color: 'secondary.main' }} />
+              <Typography variant="h6">Recommended Complexity</Typography>
+              <Typography variant="body1" color="textSecondary">{recommendedComplex || 'Not Available'}</Typography>
+            </Box>
           </Grid>
-          <Grid item xs={12}>
-            <Card>
-              {/* Sachitha */}
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Recommend
-                </Typography>
-                <Typography variant="body1">
-                  {userDetails.performance}
-                </Typography>
-                <form onSubmit={handleRecommendSubmit}>
-                  {Object.keys(recommendInputs).map((key) => (
-                    <div key={key}>
-                      <TextField
-                        fullWidth
-                        label={key}
-                        name={key}
-                        value={recommendInputs[key]}
-                        onChange={handleRecommendChange}
-                        margin="normal"
-                      />
-                    </div>
-                  ))}
-                  <Button variant="contained" type="submit">Predict</Button>
-                </form>
-
-                {/* Display Prediction Result */}
-                {predictionRecommendation && (
-                  <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                    Predicted Recommendation: {predictionRecommendation}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12}>
-            <Card>
-              {/* Kavindu */}
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  Progress
-                </Typography>
-                <Typography variant="body1">
-                  {userDetails.progress}
-                </Typography>
-
-                {/* Prediction Form */}
-                <form onSubmit={handlePredictionSubmit}>
-                  {Object.keys(predictionInputs).map((key) => (
-                    <div key={key}>
-                      <TextField
-                        fullWidth
-                        label={key}
-                        name={key}
-                        value={predictionInputs[key]}
-                        onChange={handlePredictionChange}
-                        margin="normal"
-                      />
-                    </div>
-                  ))}
-                  <Button variant="contained" type="submit">Predict</Button>
-                </form>
-
-                {/* Display Prediction Result */}
-                {predictionResult && (
-                  <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                    Predicted Class: {predictionResult}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ border: 1, borderRadius: 2, padding: 2, textAlign: 'center' }}>
+              <LibraryBooks sx={{ fontSize: 40, color: 'info.main' }} />
+              <Typography variant="h6">Recommended Content</Typography>
+              <Typography variant="body1" color="textSecondary">{recommendedContent || 'Not Available'}</Typography>
+            </Box>
           </Grid>
         </Grid>
-
         {/* Edit and Update Profile */}
         <Box mt={4}>
           {isEditing ? (

@@ -3,7 +3,6 @@ import { AppBar, Toolbar, Typography, Switch, Box, IconButton, Menu, MenuItem, B
 import { Link as RouterLink } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import AuthContext from '../contexts/AuthContext';
-import logo from '../images/Logo.png'; // Adjust the path to your logo
 
 const NavBar = ({ darkMode, setDarkMode }) => {
   const { user, logout } = useContext(AuthContext);
@@ -37,7 +36,7 @@ const NavBar = ({ darkMode, setDarkMode }) => {
             About
           </Typography>
           <Typography variant="body1" component={RouterLink} to="/course" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
-            Courses
+            Recommended For You
           </Typography>
           <Typography variant="body1" component={RouterLink} to="/contact" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
             Contact
