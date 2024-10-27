@@ -26,7 +26,7 @@ jobs:
         run: |
           cd recommend  # Update this line to point to your subdirectory
           git init
-          heroku git:remote -a $HEROKU_APP_NAME
+          git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
           git add .
           git commit -m "Deploying subdirectory"
-          git push --force heroku master  # Ensure this matches the main branch on Heroku
+          git push --force heroku master  # or main, depending on your Heroku setup
