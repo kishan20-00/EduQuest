@@ -22,7 +22,7 @@ def predict():
         'Subject': data['interestedSubject'],
         'Course Score': data['courseScore'],
         'Learning Score': data['learningScore'],
-        'Quiz Score': data['quizScore']
+        'quiz Score': data['quizScore']
     }])
 
     # Encode categorical variables
@@ -31,7 +31,7 @@ def predict():
         input_data[col] = label_encoders[col].transform(input_data[col])
 
     # Standardize numerical features
-    numerical_cols = ['Course Score', 'Learning Score', 'Quiz Score']
+    numerical_cols = ['Course Score', 'Learning Score', 'quiz Score']
     input_data[numerical_cols] = scaler.transform(input_data[numerical_cols])
     print(input_data)
 
