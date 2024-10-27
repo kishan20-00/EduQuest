@@ -221,11 +221,12 @@ router.put('/updateQuizScore/:id', async (req, res) => {
   }
 });
 
-router.put('/update-monitoring', async (req, res) => {
-  const { userId, preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
+router.put('/update-monitoring/:id', async (req, res) => {
+  const { id } = req.params;  // Get the user ID from the URL parameter
+  const { preferredStudyTime, goal, curriculumStructure, externalFactor, timeSpentOnContent } = req.body;
 
   try {
-    await EduUsers.findByIdAndUpdate(userId, {
+    await EduUsers.findByIdAndUpdate(id, {  // Use the `id` from the URL parameter
       preferredStudyTime,
       goal,
       curriculumStructure,
@@ -234,9 +235,11 @@ router.put('/update-monitoring', async (req, res) => {
     });
     res.status(200).json({ message: 'Monitoring data updated successfully' });
   } catch (error) {
+    console.error(error.message);
     res.status(500).json({ message: 'Failed to update monitoring data', error });
   }
 });
+
 
 
 module.exports = router;
