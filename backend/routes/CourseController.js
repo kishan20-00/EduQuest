@@ -68,6 +68,21 @@ router.get('/filter/:subject', async (req, res) => {
   }
 });
 
+// Get all course content by complexity and learningMaterial
+router.get('/filter/:complexity/:learningMaterial', async (req, res) => {
+  const { complexity, learningMaterial } = req.params; // Access complexity and learningMaterial from req.params
+  
+  try {
+    const courses = await Course.find({
+      complexity,
+      learningMaterial,
+    });
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 module.exports = router;
