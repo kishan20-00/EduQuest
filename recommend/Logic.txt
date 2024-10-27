@@ -31,3 +31,37 @@ AND(A2="Web Development", B2>=40, B2<=70, C2>=40, C2<=70, D2>=40, D2<=70), "Soft
 AND(A2="Web Development", OR(B2<40, C2<40, D2<40)), "Web Development",
     TRUE, "IT Project Management"
 )
+
+
+
+
+Artificial Intelligence and Machine Learning
+Cloud Computing
+CyberSecurity
+Data Science and Analytics
+Database Management
+Devops and Systems Integration
+IT Project Management
+Network and System Administration
+Software Engineering and Development
+Web Development
+
+
+
+---------------------------------------------------------------------
+
+
+
+
+=IFS(
+    AND(B5140>70, C5140>70, D5140>70), "advanced",
+AND(B5140>=40, B5140<=70, C5140>=40, C5140<=70, D5140>=40, D5140<=70), "intermediate",
+TRUE, "beginner"
+)
+
+
+=IFS(
+    AND(B5140>70, C5140>70, D5140>70), "advanced",
+AND(B5140>=40, B5140<=70, C5140>=40, C5140<=70, D5140>=40, D5140<=70), "intermediate",
+TRUE, "beginner"
+)

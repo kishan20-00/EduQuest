@@ -15,27 +15,40 @@ for col in ['Proficiency level', 'Preferred subjects', 'Preferred study times', 
     label_encoder_X_classes[col] = load(f'label_encoder_{col}_classes.joblib')
 label_encoder_Y_classes = load('label_encoder_Y_classes.joblib')
 
+# Mapping from frontend variable names to model variable names
+variable_mapping = {
+    'quizScore': 'Quiz scores',  # If quizScore should be used for another variable, change accordingly
+    'preferredStudyTime': 'Preferred study times',
+    'goal': 'Goals',
+    'curriculumStructure': 'Curriculum structure',
+    'externalFactor': 'External factors',
+    'timeSpentOnContent': 'Time spent on different types of content',
+    'proficiencyLevel': 'Proficiency level',
+    'preferredSubject': 'Preferred subjects',  # Assuming this is similar to interestedSubject
+    'availableContent': 'Available content',
+    'completeRates': 'Completion rates'
+}
+
 def preprocess_input(input_data):
     encoded_input = []
-    for col, value in input_data.items():
-        if col in label_encoder_X_classes:
+    for key, value in input_data.items():
+        # Map the frontend variable names to model variable names
+        model_variable = variable_mapping.get(key)
+        if model_variable:
             # Use the corresponding LabelEncoder to transform feature variables
-            label_encoder = label_encoder_X_classes[col]
-            try:
-                encoded_value = label_encoder.transform([value])[0]
-                encoded_input.append(encoded_value)
-            except KeyError:
-                print(f"Unseen label '{value}' for feature '{col}'")
-                # Handle unseen labels by replacing them with a default value or -1
-                encoded_input.append(-1)
+            label_encoder = label_encoder_X_classes.get(model_variable)
+            if label_encoder:
+                try:
+                    encoded_value = label_encoder.transform([value])[0]
+                    encoded_input.append(encoded_value)
+                except KeyError:
+                    print(f"Unseen label '{value}' for feature '{model_variable}'")
+                    encoded_input.append(-1)  # Default for unseen labels
+            else:
+                # If the variable does not require encoding, append the numeric value
+                encoded_input.append(float(value))
         else:
-            # Convert last three variables to numbers
-            try:
-                numeric_value = float(value)
-                encoded_input.append(numeric_value)
-            except ValueError:
-                print(f"Invalid numeric input '{value}' for feature '{col}'")
-                encoded_input.append(0)  # Handle invalid numeric input by defaulting to 0 or any desired fallback
+            print(f"No mapping found for variable '{key}'")
 
     print("Encoded input:", encoded_input)
     return np.array(encoded_input).reshape(1, -1)

@@ -1,30 +1,28 @@
 import requests
 
-# Define the URL of the Flask app
-url = 'http://127.0.0.1:5002/predict'
+# Define the endpoint URL
+url = "http://127.0.0.1:5002/predict"
 
-# Example input data
+# Define the input data according to the expected frontend structure
 input_data = {
-    'Proficiency level': 'Medium',
-    'Preferred subjects': 'Cloud Computing',
-    'Preferred study times': 'Morning',
-    'Goals': 'Short-term',
-    'Curriculum structure': 'Exam',
-    'Available content': 'Lectures',
-    'External factors': 'Time Constraints',
-    'Time spent on different types of content': '10',
-    'Completion rates': '7',
-    'Quiz scores': '80'
+    'quizScore': 90,    # Example score for the quiz
+    'preferredStudyTime': 'Morning',
+    'goal': 'Short-term',
+    'curriculumStructure': 'Exam',
+    'externalFactor': 'Time Constraints',
+    'timeSpentOnContent': 10,  # Example time spent
+    'proficiencyLevel': 'intermediate',
+    'preferredSubject': 'Software Engineering and Development',  # Assuming this is similar to interestedSubject
+    'availableContent': 'video',
+    'completeRates': 8  # Example completion rates
 }
 
-# Send a POST request with JSON data to the Flask app
+# Send POST request to the Flask app
 response = requests.post(url, json=input_data)
 
-# Check if the request was successful
+# Check the response from the Flask app
 if response.status_code == 200:
-    # Get the predicted class from the response
-    predicted_class = response.json()['predicted_class']
-    print('Predicted class:', predicted_class)
+    # Print the predicted class returned from the server
+    print("Response from server:", response.json())
 else:
-    print('Error:', response.status_code)
-
+    print("Error:", response.status_code, response.text)
