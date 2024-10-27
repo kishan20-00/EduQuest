@@ -18,10 +18,10 @@ def predict():
     try:
         # Get the data from the request
         data = request.json
-        subject = data['subject']
-        course_score = data['course_score']
-        learning_score = data['learning_score']
-        quiz_score = data['quiz_score']
+        subject = data['interestedSubject']
+        course_score = data['courseScore']
+        learning_score = data['learningScore']
+        quiz_score = data['quizScore']
 
         # Transform the categorical input
         subject_encoded = label_encoder_subject.transform([subject])[0]
