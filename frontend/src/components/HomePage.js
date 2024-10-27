@@ -46,6 +46,7 @@ const HomePage = () => {
   const fetchCourses = async () => {
     try {
       const response = await axios.get('https://edu-quest-hfoq.vercel.app/api/content');
+      // Assuming each course object includes an 'averageRating' field from the API response
       setCourses(response.data);
     } catch (error) {
       console.error('Error fetching courses:', error);
@@ -240,7 +241,7 @@ const HomePage = () => {
                     Complexity: {course.complexity}
                   </Typography>
                   <Box sx={{ mt: 1 }}>
-                    <StarRating rating={parseFloat(course.reviews) || 0} />
+                    <StarRating rating={course.averageRating || 0} /> {/* Displaying average rating */}
                   </Box>
                 </CardContent>
               </Card>

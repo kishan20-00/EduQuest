@@ -96,7 +96,6 @@ const EyeTrackingVideo = forwardRef(({ isPlaying, isCompleted, userId }, ref) =>
         style={{ display: isPlaying ? 'block' : 'none' }} 
       />
       <p>Predictions: {predictions}</p>
-      <p>Counter: {counter.toFixed(1)}</p>
     </div>
   );
 });

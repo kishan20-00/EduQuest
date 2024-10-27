@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import {
   Box,
@@ -10,8 +10,11 @@ import {
   CardMedia,
 } from '@mui/material';
 import StarRating from './StarRating';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../contexts/AuthContext';
 
 const ViewCoursesPage = () => {
+  const { user } = useContext(AuthContext);
   const [courses, setCourses] = useState([]);
   const [specializations, setSpecializations] = useState([]);
   const [recommendedSubjects, setRecommendedSubjects] = useState([]);
@@ -19,6 +22,7 @@ const ViewCoursesPage = () => {
   const [recommendedMaterials, setRecommendedMaterials] = useState([]);
   const [filteredMaterialsCourses, setFilteredMaterialsCourses] = useState([]);
   const [userDetails, setUserDetails] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -130,9 +134,13 @@ const fetchFilteredMaterialsCourses = async (complexities, material) => {
 };
 
 
-  const handleCardClick = (url) => {
-    window.open(url, '_blank');
-  };
+const handleCardClick = (id, isSpecialization) => {
+  if (!user) {
+    alert("Please sign in to view this content."); // Alert the user
+    return; // Prevent navigation
+  }
+  navigate(isSpecialization ? `/specialization/${id}` : `/course/${id}`);
+};
 
   return (
     <Container>
@@ -147,7 +155,7 @@ const fetchFilteredMaterialsCourses = async (complexities, material) => {
         {courses.map((course) => (
           <Grid item xs={12} sm={6} md={4} key={course._id}>
             <Card
-              onClick={() => handleCardClick(course.source)}
+              onClick={() => handleCardClick(course._id, false)}
               sx={{
                 cursor: 'pointer',
                 height: '340px',
@@ -192,7 +200,7 @@ const fetchFilteredMaterialsCourses = async (complexities, material) => {
         {specializations.map((specialization) => (
           <Grid item xs={12} sm={6} md={4} key={specialization._id}>
             <Card
-              onClick={() => handleCardClick(specialization.source)}
+              onClick={() => handleCardClick(specialization._id, true)}
               sx={{
                 cursor: 'pointer',
                 height: '280px',
@@ -237,7 +245,7 @@ const fetchFilteredMaterialsCourses = async (complexities, material) => {
         {filteredMaterialsCourses.map((course) => (
           <Grid item xs={12} sm={6} md={4} key={course._id}>
             <Card
-              onClick={() => handleCardClick(course.source)}
+              onClick={() => handleCardClick(course._id, false)}
               sx={{
                 cursor: 'pointer',
                 height: '340px',

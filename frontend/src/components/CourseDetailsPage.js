@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Rating, TextField } from '@mui/material';
 import EyeTrackingVideo from './Video';
 import AuthContext from '../contexts/AuthContext';
 
@@ -13,9 +13,14 @@ const CourseDetailsPage = () => {
   const [points, setPoints] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
-  const [correctAnswers, setCorrectAnswers] = useState([]); // Track which answers are correct
+  const [correctAnswers, setCorrectAnswers] = useState([]);
   const [isCompleted, setIsCompleted] = useState(false);
   const eyeTrackingRef = useRef(null);
+  
+  // New states for review
+  const [comment, setComment] = useState('');
+  const [rating, setRating] = useState(0);
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -25,6 +30,10 @@ const CourseDetailsPage = () => {
         if (response.data.learningMaterial === 'video') {
           setIsPlaying(true);
         }
+        
+        // Fetch existing reviews for this course
+        const reviewsResponse = await axios.get(`https://edu-quest-hfoq.vercel.app/api/reviews/${id}`);
+        setReviews(reviewsResponse.data);
       } catch (error) {
         console.error('Error fetching course:', error);
       }
@@ -100,7 +109,7 @@ const CourseDetailsPage = () => {
     } catch (error) {
       console.error('Error updating scores:', error);
     }
-  };  
+  };   
 
   const handleAnswerChange = (index, answer) => {
     const newAnswers = [...userAnswers];
@@ -111,10 +120,33 @@ const CourseDetailsPage = () => {
   const checkAnswers = () => {
     if (course.quizAnswers && userAnswers.length === course.quizAnswers.length) {
       const results = userAnswers.map((answer, index) => answer === course.quizAnswers[index].toLowerCase());
-      setCorrectAnswers(results); // Update correct answers based on user input
+      setCorrectAnswers(results);
       const score = results.reduce((acc, isCorrect) => acc + (isCorrect ? 5 : 0), 0);
       setQuizScore(score);
-      console.log(`Your quiz score is: ${score}`);
+    }
+  };
+
+  const handleReviewSubmit = async () => {
+    if (!user) {
+      console.error('User is not authenticated.');
+      return;
+    }
+
+    try {
+      // Post new review
+      await axios.post(`https://edu-quest-hfoq.vercel.app/api/reviews`, {
+        courseId: id,
+        userId: user._id,
+        rating,
+        comment,
+      });
+
+      // Optionally, update the state to include the new review
+      setReviews([...reviews, { rating, comment, userId: user._id }]);
+      setComment('');
+      setRating(0);
+    } catch (error) {
+      console.error('Error submitting review:', error);
     }
   };
 
@@ -198,6 +230,43 @@ const CourseDetailsPage = () => {
         </>
       )}
 
+      {/* Review Section */}
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6">Leave a Review:</Typography>
+        <Rating
+          value={rating}
+          onChange={(event, newValue) => {
+            setRating(newValue);
+          }}
+        />
+        <TextField
+          label="Your Review"
+          variant="outlined"
+          fullWidth
+          multiline
+          rows={4}
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          sx={{ marginTop: 2 }}
+        />
+        <Button variant="contained" color="primary" onClick={handleReviewSubmit} sx={{ marginTop: 2 }}>
+          Submit Review
+        </Button>
+      </Box>
+
+      {/* Display Reviews */}
+      {reviews.length > 0 && (
+        <Box sx={{ marginTop: 4 }}>
+          <Typography variant="h6">Reviews:</Typography>
+          {reviews.map((rev, index) => (
+            <Box key={index} sx={{ marginBottom: 2 }}>
+              <Rating value={rev.rating} readOnly />
+              <Typography>{rev.comment}</Typography>
+            </Box>
+          ))}
+        </Box>
+      )}
+
       <Button
         variant="contained"
         color="secondary"
@@ -209,7 +278,6 @@ const CourseDetailsPage = () => {
       >
         Complete
       </Button>
-      {isCompleted && <Typography>Points: {points}</Typography>}
     </Box>
   );
 };
