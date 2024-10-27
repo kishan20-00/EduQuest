@@ -69,5 +69,4 @@ router.get('/filter/:subject', async (req, res) => {
   }
 });
 
-
 module.exports = router;
