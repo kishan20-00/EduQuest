@@ -53,6 +53,7 @@ const UserSchema = new mongoose.Schema({
   curriculumStructure: { type: String },
   externalFactor: { type: String },
   timeSpentOnContent: { type: Number }, 
+  learningStyle: { type: String },
 }, { timestamps: true });
 
 module.exports = mongoose.model('EduUsers', UserSchema);
