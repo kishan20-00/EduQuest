@@ -13,6 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up Git user
+        run: |
+          git config --global user.name "kishan20-00"
+          git config --global user.email "kishansteve@gmail.com"
+
       - name: Deploy to Heroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -24,4 +29,4 @@ jobs:
           heroku git:remote -a $HEROKU_APP_NAME
           git add .
           git commit -m "Deploying subdirectory"
-          git push --force heroku main  # Push the subdirectory code to Heroku
+          git push --force heroku master  # Ensure this matches the main branch on Heroku
