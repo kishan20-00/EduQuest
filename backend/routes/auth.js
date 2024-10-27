@@ -197,9 +197,15 @@ router.put('/updateLearningScore/:id', async (req, res) => {
     let user = await User.findById(id);
     if (!user) return res.status(404).json({ msg: 'User not found' });
 
-    // Decrease learning score and ensure it doesn't go below 0
-    let newLearningScore = (parseInt(user.learningScore) || 100) - decrementValue;
-    user.learningScore = newLearningScore < 0 ? '0' : newLearningScore.toString();
+    // Calculate new learning score
+    let newLearningScore = (parseInt(user.learningScore) || 100) + decrementValue;
+
+    // Reset to 100 if the score reaches 0 or goes below it
+    if (newLearningScore <= 0) {
+      newLearningScore = 100;
+    }
+
+    user.learningScore = newLearningScore.toString();
     await user.save();
 
     res.json({ msg: 'Learning score updated successfully', learningScore: user.learningScore });

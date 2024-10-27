@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid, Card, CardContent, Avatar, TextField, Button, Select, MenuItem } from '@mui/material';
 import axios from 'axios';
 import GaugeChart from 'react-gauge-chart';
-import { School, BarChart, LibraryBooks } from '@mui/icons-material'; // Icons for recommendation sections
+import { School, BarChart, LibraryBooks, EmojiObjects } from '@mui/icons-material'; // Icons for recommendation sections
 
 const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState({
@@ -200,11 +200,18 @@ const ProfilePage = () => {
                 <Typography variant="body2">Contact Number: {userDetails.contactNumber}</Typography>
                 <Typography variant="body2">Profession: {userDetails.profession}</Typography>
                 <Typography variant="body2">Interested Subject: {userDetails.interestedSubject}</Typography>
-                <Typography variant="body2">Learning Style: {userDetails.learningStyle}</Typography>
               </Grid>
             </Grid>
           </CardContent>
         </Card>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, padding: 2, border: '1px solid', borderRadius: 2, borderColor: 'grey.300' }}>
+          <EmojiObjects sx={{ fontSize: 40, color: 'primary.main', mr: 2 }} />
+          <Box>
+            <Typography variant="h6">Learning Style</Typography>
+            <Typography color="textSecondary">{userDetails.learningStyle || 'Not Available'}</Typography>
+          </Box>
+        </Box>
 
         {/* User Metrics */}
         <Grid container spacing={4}>
