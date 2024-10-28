@@ -299,7 +299,7 @@ const ProfilePage = () => {
           </Grid>
           <Grid item xs>
             <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#3e2b71', marginBottom: '20px' }}>
-              : {userDetails.name}
+            ♠ {userDetails.name}
             </Typography>
             <InfoContainer>
               <EmailIcon sx={{ color: '#3e2b71', marginRight: 1 }} />
