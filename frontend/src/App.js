@@ -15,6 +15,7 @@ import AboutUsPage from './components/About';
 import CourseDetailsPage from './components/CourseDetailsPage';
 import AddSpecialization from './components/AddSpecialization';
 import SpecializationDetail from './components/SpecializationDetail';
+import PerPathway from  './components/PerPathway';
 import { Box } from '@mui/material';
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
               <Route path="/about" element={<AboutUsPage />} />
               <Route path="/course/:id" element={<CourseDetailsPage />} />
               <Route path="addspecial" element={<AddSpecialization />} />
+              <Route path="/PerPathway" element={<PerPathway />} />
               <Route path="/specialization/:specializationId" element={<SpecializationDetail />} />
             </Routes>
           </Box>

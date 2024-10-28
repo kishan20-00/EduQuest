@@ -222,7 +222,7 @@ const CustomButton = ({ children }) => {
         <Typography variant="h6" component="h3" sx={{ mb: 2, fontWeight: 'bold' }}>
           Make the Best Personalized Learning Pathway For You
         </Typography>
-        <Button variant="outlined" sx={{ borderColor: '#fff', color: '#fff', marginBottom: 2 }} startIcon={<School />}>
+        <Button variant="outlined" sx={{ borderColor: '#fff', color: '#fff', marginBottom: 2 }} startIcon={<School />} component={RouterLink} to="/PerPathway">
           Get Started
         </Button>
         <Typography variant="h6" component="h3" sx={{ mb: 2, fontWeight: 'bold' }}>

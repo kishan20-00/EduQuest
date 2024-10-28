@@ -15,6 +15,7 @@ import FlagIcon from '@mui/icons-material/Flag';
 import PublicIcon from '@mui/icons-material/Public';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState({
@@ -465,7 +466,7 @@ const ProfilePage = () => {
       <Typography variant="body1" sx={{ mb: 2 }}>
         View Your Predicted and Analyzed Personalized Learning Pathway, which includes details such as quiz scores, learning scores, course scores, predicted proficiency level, preferred subjects, available content, and completion rates based on your current behavior.
       </Typography>
-      <Button variant="contained" sx={{ bgcolor: '#ffffff', color: '#3e2b71', fontWeight: 'bold', '&:hover': { bgcolor: '#e6e6ff' } }}>
+      <Button variant="contained" sx={{ bgcolor: '#ffffff', color: '#3e2b71', fontWeight: 'bold', '&:hover': { bgcolor: '#e6e6ff' } }} component={RouterLink} to="/PerPathway">
         View Your Personalized Learning Pathway
       </Button>
     </Box>
