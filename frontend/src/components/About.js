@@ -6,19 +6,25 @@ import TeamMember3 from '../images/team-member3.jpg';
 
 const teamMembers = [
   {
-    name: 'Alice Johnson',
+    name: 'Jayasinghe K.A.K.N',
     role: 'CEO',
     image: TeamMember1,
     bio: 'Alice has over 20 years of experience in the industry and leads our team with passion and dedication.',
   },
   {
-    name: 'Bob Smith',
+    name: 'Nishshanka N.A.P.K.R',
     role: 'CTO',
     image: TeamMember2,
     bio: 'Bob is our technology guru, constantly exploring new tech trends and ensuring we stay ahead in innovation.',
   },
   {
-    name: 'Charlie Brown',
+    name: 'Nishshanka N.A.G.A.A',
+    role: 'COO',
+    image: TeamMember3,
+    bio: 'Charlie manages our operations with a focus on efficiency and excellence, ensuring our projects run smoothly.',
+  },
+  {
+    name: 'Abeykoon R.M.S.P',
     role: 'COO',
     image: TeamMember3,
     bio: 'Charlie manages our operations with a focus on efficiency and excellence, ensuring our projects run smoothly.',
@@ -83,7 +89,7 @@ const AboutUsPage = () => {
           We would love to hear from you! If you have any questions or feedback, feel free to reach out to us.
         </Typography>
         <Typography variant="body1">
-          <strong>Email:</strong> support@eduquest.com
+          <strong>Email:</strong> support@elearnpath.com
         </Typography>
         <Typography variant="body1">
           <strong>Phone:</strong> (123) 456-7890
