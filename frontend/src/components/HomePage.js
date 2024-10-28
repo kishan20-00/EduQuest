@@ -243,7 +243,7 @@ const CustomButton = ({ children }) => {
           <Typography variant="h6" component="h3" sx={{ mb: 2, fontWeight: 'bold' }}>
           Experience a new dimension of education at your fingertips.!
         </Typography>
-        <Button variant="outlined" sx={{ borderColor: '#fff', color: '#fff', marginBottom: 2 }} startIcon={<Login />}>
+        <Button variant="outlined" sx={{ borderColor: '#fff', color: '#fff', marginBottom: 2 }} startIcon={<Login />} component={RouterLink} to="/signin">
          Sign In Now.!
         </Button>
         </>
