@@ -127,6 +127,7 @@ const CourseDetailsPage = () => {
     const newAnswers = [...userAnswers];
     newAnswers[index] = answer.toLowerCase();
     setUserAnswers(newAnswers);
+    handleCompleteClick();
   };
 
   const checkAnswers = () => {
