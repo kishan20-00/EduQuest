@@ -12,6 +12,7 @@ import {
 import StarRating from './StarRating';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
+import BookIcon from '@mui/icons-material/Book'; 
 
 const ViewCoursesPage = () => {
   const { user } = useContext(AuthContext);
@@ -143,10 +144,14 @@ const handleCardClick = (id, isSpecialization) => {
 };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Recommended Courses and Specializations
+    <Container >
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 11, mb: 2 }}>
+      <BookIcon sx={{ mr: 1, fontWeight: '600' }} /> {/* Adjust margin for spacing */}
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: '600' }}>
+        Recommendation Engine Personalized Predictions
       </Typography>
+      
+    </Box>
 
       <Typography variant="h5" gutterBottom>
         Recommended Courses

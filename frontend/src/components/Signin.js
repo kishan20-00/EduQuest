@@ -38,7 +38,7 @@ function SignIn() {
     <ThemeProvider theme={createTheme()}>
       <Box
         sx={{
-          backgroundImage: `url(${backgroundImage})`,
+          backgroundImage: `url(https://cdn.prod.website-files.com/5fed49be52334588b156311c/5ffcbd07fb58bf61f3d47dcf_deep-learning.jpg)`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center',

@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Switch, Box, IconButton, Menu, MenuItem, B
 import { Link as RouterLink } from 'react-router-dom';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import AuthContext from '../contexts/AuthContext';
+import Logo from '../assets/logo.png'
 
 const NavBar = ({ darkMode, setDarkMode }) => {
   const { user, logout } = useContext(AuthContext);
@@ -21,26 +22,46 @@ const NavBar = ({ darkMode, setDarkMode }) => {
   };
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" sx={{ backgroundColor: ' #0B1130' }}>
       <Toolbar>
-        <Box component={RouterLink} to="/" sx={{ textDecoration: 'none', color: 'inherit', marginRight: 2 }}>
-        <Typography variant="body1"  sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
-        LearnPath +
-        </Typography>
-        </Box>
+      <Box component={RouterLink} to="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit', marginRight: 2 }}>
+          <Box component="img" src={Logo} alt="LearnPath+ Logo" sx={{ width: 28, height: 28, marginRight: 1 }} />
+          <Typography 
+              variant="h6" 
+              sx={{ 
+                  fontSize: '1.2rem', 
+                  fontWeight: 'bold', 
+                  textDecoration: 'none', 
+                  color: '#fff', 
+                  margin: 1 
+              }}
+          >
+              LearnPath+
+          </Typography>
+      </Box>
+
+
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography variant="body1" component={RouterLink} to="/" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
             Home
           </Typography>
-          <Typography variant="body1" component={RouterLink} to="/about" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
-            About
-          </Typography>
+          
           <Typography variant="body1" component={RouterLink} to="/course" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
             Recommended For You
           </Typography>
+
+          <Typography variant="body1" component={RouterLink} to="/about" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
+            About
+          </Typography>
+
+          <Typography variant="body1" component={RouterLink} to="https://learnpath-plus-static-site.vercel.app/" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
+            What is LearnPath+
+          </Typography>
+
           <Typography variant="body1" component={RouterLink} to="/contact" sx={{ margin: 1, textDecoration: 'none', color: 'inherit' }}>
             Contact
           </Typography>
+
         </Box>
         <Box sx={{ flexGrow: 1 }} />
         <Box>

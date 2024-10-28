@@ -15,9 +15,10 @@ import AboutUsPage from './components/About';
 import CourseDetailsPage from './components/CourseDetailsPage';
 import AddSpecialization from './components/AddSpecialization';
 import SpecializationDetail from './components/SpecializationDetail';
+import PerPathway from  './components/PerPathway';
+import { Box } from '@mui/material';
 
 function App() {
-
   const [darkMode, setDarkMode] = useState(false);
 
   const lightTheme = createTheme({
@@ -34,25 +35,30 @@ function App() {
 
   return (
     <Router>
-    <AuthProvider>
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-    <CssBaseline />
-    <NavBar darkMode={darkMode} setDarkMode={setDarkMode} />
-      <Routes>
-      <Route path="/" element={<HomePage />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/video" element={<EyeTrackingVideo />} />
-          <Route path="/addcourse" element={<AddCoursePage />} />
-          <Route path="/course" element={<ViewCoursesPage />} />
-          <Route path="/about" element={<AboutUsPage />} />
-          <Route path="/course/:id" element={<CourseDetailsPage />} />
-          <Route path="addspecial" element={<AddSpecialization />} />
-          <Route path="/specialization/:specializationId" element={<SpecializationDetail />} />
-      </Routes>
-      </ThemeProvider>
-    </AuthProvider>
+      <AuthProvider>
+        <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+          <CssBaseline />
+          <NavBar darkMode={darkMode} setDarkMode={setDarkMode} />
+          
+          
+          <Box sx={{ mt: 4 }}> 
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/video" element={<EyeTrackingVideo />} />
+              <Route path="/addcourse" element={<AddCoursePage />} />
+              <Route path="/course" element={<ViewCoursesPage />} />
+              <Route path="/about" element={<AboutUsPage />} />
+              <Route path="/course/:id" element={<CourseDetailsPage />} />
+              <Route path="addspecial" element={<AddSpecialization />} />
+              <Route path="/PerPathway" element={<PerPathway />} />
+              <Route path="/specialization/:specializationId" element={<SpecializationDetail />} />
+            </Routes>
+          </Box>
+        </ThemeProvider>
+      </AuthProvider>
     </Router>
   );
 }
